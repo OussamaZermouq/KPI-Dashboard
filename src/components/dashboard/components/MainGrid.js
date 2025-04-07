@@ -11,6 +11,7 @@ import HighlightedCard from "./HighlightedCard";
 import PageViewsBarChart from "./PageViewsBarChart";
 import SessionsChart from "./SessionsChart";
 import StatCard from "./StatCard";
+import ThroughtputLineChart from "./custom/ThroughtputLineChart";
 
 export default function MainGrid({
   rrcConnectionRateProp,
@@ -18,14 +19,21 @@ export default function MainGrid({
   userUploadRate,
   erabSuccessRateProp,
   uploadtTrafficProp,
-  downloadTrafficProp
+  downloadTrafficProp,
+  hourProp,
+  cellAvailabilityProp,
 }) {
-  const [rrcConnectionRate, setRrcConnectionRate] = useState(rrcConnectionRateProp);
+  const [rrcConnectionRate, setRrcConnectionRate] = useState(
+    rrcConnectionRateProp
+  );
   const [userThroughputDL, setUserThroughtputDL] = useState(userDownloadRate);
   const [userThroughputUL, setUserThroughtputUL] = useState(userUploadRate);
   const [erabSuccessRate, setErabSuccessRate] = useState(erabSuccessRateProp);
   const [uploadtTraffic, setUploadtTraffic] = useState(uploadtTrafficProp);
   const [downloadTraffic, setDownloadtTraffic] = useState(downloadTrafficProp);
+  const [cellAvailability, setCellAvailability] =
+    useState(cellAvailabilityProp);
+  const [hours, setHours] = useState(hourProp);
 
   const [rrcConnectionRateAvg, setRrcConnectionRateAvg] = useState(
     rrcConnectionRate.reduce((a, b) => a + b) / rrcConnectionRate.length
@@ -40,9 +48,9 @@ export default function MainGrid({
     erabSuccessRate.reduce((a, b) => a + b) / erabSuccessRate.length
   );
 
-  useEffect(()=>{
-    console.log(downloadTraffic)
-  })
+  useEffect(() => {
+    console.log(downloadTraffic);
+  });
 
   const data = [
     {
@@ -51,6 +59,7 @@ export default function MainGrid({
       interval: "Last 30 days",
       trend: "neutral",
       data: rrcConnectionRate,
+      hours: hours,
     },
     {
       title: "User throughput DL",
@@ -58,6 +67,7 @@ export default function MainGrid({
       interval: "Last 30 days",
       trend: "neutral",
       data: userThroughputDL,
+      hours: hours,
     },
     {
       title: "User throughput UL",
@@ -65,6 +75,7 @@ export default function MainGrid({
       interval: "Last 30 days",
       trend: "neutral",
       data: userThroughputUL,
+      hours: hours,
     },
     {
       title: "ERAB Setup Success Rate",
@@ -72,6 +83,7 @@ export default function MainGrid({
       interval: "Last 30 days",
       trend: "neutral",
       data: erabSuccessRate,
+      hours: hours,
     },
   ];
   return (
@@ -92,12 +104,22 @@ export default function MainGrid({
           </Grid>
         ))}
         <Grid size={{ xs: 12, md: 6 }}>
-          <SessionsChart 
-          uploadTrafficProp={uploadtTraffic}
-          downloadTrafficProp = {downloadTraffic}/>
+          <SessionsChart
+            uploadTrafficProp={uploadtTraffic}
+            downloadTrafficProp={downloadTraffic}
+            hourProp={hours}
+          />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <PageViewsBarChart />
+          <PageViewsBarChart
+            cellAvailabilityProp={cellAvailability}
+            hoursProp={hours}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} columns={12}>
+        <Grid size={{ xs: 12, lg: 9 }}>
+          <ThroughtputLineChart />
         </Grid>
       </Grid>
       {/*      

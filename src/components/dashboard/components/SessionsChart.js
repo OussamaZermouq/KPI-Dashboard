@@ -8,6 +8,7 @@ import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { LineChart } from "@mui/x-charts/LineChart";
+import { Slider } from "@mui/material";
 
 function AreaGradient({ color, id }) {
   return (
@@ -27,8 +28,8 @@ AreaGradient.propTypes = {
 
 function getDaysInMonth(month, year) {
   const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString("en-US", {
-    month: "short",
+  const monthName = date.toLocaleDateString('en-US', {
+    month: 'short',
   });
   const daysInMonth = date.getDate();
   const days = [];
@@ -40,19 +41,16 @@ function getDaysInMonth(month, year) {
   return days;
 }
 
+
 export default function SessionsChart({
   uploadTrafficProp,
   downloadTrafficProp,
+  hourProp
 }) {
   const [uploadTraffic, setUploadTraffic] = useState(uploadTrafficProp);
   const [downloadTraffic, setDownloadTraffic] = useState(downloadTrafficProp);
-  const [hours, setHours] = useState([]);
+  const [hours, setHours] = useState(hourProp);
 
-  useEffect(() => {
-    const hourArray = Array.from({ length: 24 }, (  _, i) => i);
-    setHours(hourArray);
-    console.log(hourArray)
-  }, []);
   const theme = useTheme();
 
   const colorPalette = [
@@ -77,21 +75,22 @@ export default function SessionsChart({
             }}
           ></Stack>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Sessions per day for the last 30 days
+           Download and Upload traffic in the last {hours.length} hours
           </Typography>
         </Stack>
         <LineChart
           colors={colorPalette}
           xAxis={[
             {
+              id:'xaxis',
               scaleType: "point",
-              hours,
+              data : hours,
               tickInterval: (index, i) => i + 1 < 23,
             },
           ]}
           series={[
             {
-              id: "Upload_Traffic",
+              id: "Direct",
               label: "Upload traffic",
               showMark: false,
               curve: "linear",
@@ -101,8 +100,8 @@ export default function SessionsChart({
               data: uploadTraffic,
             },
             {
-              id: "referral",
-              label: "Referral",
+              id: "Referral",
+              label: "Download Traffic",
               showMark: false,
               curve: "linear",
               stack: "total",

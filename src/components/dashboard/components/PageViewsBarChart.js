@@ -6,8 +6,18 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
-
-export default function PageViewsBarChart() {
+import { useScatterChartProps } from '@mui/x-charts/internals';
+import { useState } from 'react';
+export default function PageViewsBarChart({
+  cellAvailabilityProp,
+  hoursProp
+}) {
+  const [cellAvailability,setCellAvailability] = useState(cellAvailabilityProp);
+  const [hours,setHours] = useState(hoursProp);
+  const [cellAvailabilityAvg, setCellAvailabilityAvg] = useState(
+    cellAvailability.reduce((a, b)=> a+b/cellAvailability.length)
+  )
+  
   const theme = useTheme();
   const colorPalette = [
     (theme.vars || theme).palette.primary.dark,
@@ -31,12 +41,12 @@ export default function PageViewsBarChart() {
             }}
           >
             <Typography variant="h4" component="p">
-              1.3M
+            {cellAvailabilityAvg.toFixed(2)} AVG.
             </Typography>
             <Chip size="small" color="error" label="-8%" />
           </Stack>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Page views and downloads for the last 6 months
+            Cell Availability in the last {hours.length} hours
           </Typography>
         </Stack>
         <BarChart
@@ -46,26 +56,14 @@ export default function PageViewsBarChart() {
             {
               scaleType: 'band',
               categoryGapRatio: 0.5,
-              data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+              data: hours,
             },
           ]}
           series={[
             {
-              id: 'page-views',
-              label: 'Page views',
-              data: [2234, 3872, 2998, 4125, 3357, 2789, 2998],
-              stack: 'A',
-            },
-            {
-              id: 'downloads',
-              label: 'Downloads',
-              data: [3098, 4215, 2384, 2101, 4752, 3593, 2384],
-              stack: 'A',
-            },
-            {
-              id: 'conversions',
-              label: 'Conversions',
-              data: [4051, 2275, 3129, 4693, 3904, 2038, 2275],
+              id: 'cell-availablity',
+              label: 'Cell Availability',
+              data: cellAvailability,
               stack: 'A',
             },
           ]}

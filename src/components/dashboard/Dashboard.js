@@ -42,6 +42,8 @@ export default function Dashboard(props) {
   const [erabSuccessRate, setErabSuccessRate] = useState([]);
   const [trafficVolumeUL, setTrafficVolumeUL] = useState([]);
   const [trafficVolumeDL, setTrafficVolumeDL] = useState([]);
+  const [hours, setHours] = useState([]);
+  const [cellAvailability, setCellAvailability] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -60,7 +62,9 @@ export default function Dashboard(props) {
         console.error("Invalid KPI data received:", kpiData);
         return;
       }
-
+      let hourData = Object.values(kpiData['data']).map(
+        (kpi) => kpi["Hour"]
+      )
       let rrcConnectionRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["1_RRC Connection Success Rate"]
       );
@@ -77,17 +81,20 @@ export default function Dashboard(props) {
       let trafficVolumeUL = Object.values(kpiData['data']).map(
         (kpi) => kpi["Traffic Volume UL (Gbytes)"]
       )
-
       let trafficVolumeDL = Object.values(kpiData['data']).map(
         (kpi) => kpi["Traffic Volume DL (Gbytes)"]
       )
-      
+      let cellAvailability = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["10_Cell Availability"]
+      )      
       setRpcConnectionRateArray(rrcConnectionRate);
       setUserThroughputDL(userDownloadRate);
       setUserThroughputUL(userUploadRate);
       setErabSuccessRate(erabSuccessRate);
       setTrafficVolumeUL(trafficVolumeUL);
       setTrafficVolumeDL(trafficVolumeDL);
+      setHours(hourData);
+      setCellAvailability(cellAvailability);
       setFileUploaded(true);
     } catch (error) {
       console.error("Error fetching KPI data:", error);
@@ -153,6 +160,8 @@ export default function Dashboard(props) {
                   erabSuccessRateProp = {erabSuccessRate}
                   uploadtTrafficProp = {trafficVolumeUL}
                   downloadTrafficProp = {trafficVolumeDL}
+                  hourProp = {hours}
+                  cellAvailabilityProp ={cellAvailability}
                   />
                 </TabPanel>
                 <TabPanel value="2">
