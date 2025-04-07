@@ -12,10 +12,14 @@ import PageViewsBarChart from './PageViewsBarChart';
 import SessionsChart from './SessionsChart';
 import StatCard, { StatCardProps } from './StatCard';
 
+
+export default function MainGrid() {
+
+  
 const data: StatCardProps[] = [
   {
-    title: 'Users',
-    value: '14k',
+    title: 'RPC Connection Success Rate',
+    value: '',
     interval: 'Last 30 days',
     trend: 'up',
     data: [
@@ -29,7 +33,7 @@ const data: StatCardProps[] = [
     interval: 'Last 30 days',
     trend: 'down',
     data: [
-      1640, 1250, 970, 1130, 1050, 900, 720, 1080, 900, 450, 920, 820, 840, 600, 820,
+      300, 1250, 970, 1130, 1050, 900, 720, 1080, 900, 450, 920, 820, 840, 600, 820,
       780, 800, 760, 380, 740, 660, 620, 840, 500, 520, 480, 400, 360, 300, 220,
     ],
   },
@@ -45,7 +49,6 @@ const data: StatCardProps[] = [
   },
 ];
 
-export default function MainGrid() {
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
       {/* cards */}
