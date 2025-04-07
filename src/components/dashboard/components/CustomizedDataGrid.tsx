@@ -3,9 +3,11 @@ import { DataGrid } from '@mui/x-data-grid';
 import { columns, rows } from '../internals/data/gridData';
 
 export default function CustomizedDataGrid() {
+  const customColumns = {
+    
+  }
   return (
     <DataGrid
-      checkboxSelection
       rows={rows}
       columns={columns}
       getRowClassName={(params) =>

@@ -37,6 +37,11 @@ export default function Dashboard(props) {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rpcConnectionRateArray, setRpcConnectionRateArray] = useState([]);
+  const [userThroughputDL, setUserThroughputDL] = useState([]);
+  const [userThroughputUL, setUserThroughputUL] = useState([]);
+  const [erabSuccessRate, setErabSuccessRate] = useState([]);
+  const [trafficVolumeUL, setTrafficVolumeUL] = useState([]);
+  const [trafficVolumeDL, setTrafficVolumeDL] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -59,8 +64,30 @@ export default function Dashboard(props) {
       let rrcConnectionRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["1_RRC Connection Success Rate"]
       );
-      console.log(rrcConnectionRate)
+      
+      let userDownloadRate = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["6_User throughput DL"]
+      );
+      let userUploadRate = Object.values(kpiData['data']).map(
+        (kpi) => kpi["7_User throughtput UL"]
+      )
+      let erabSuccessRate = Object.values(kpiData['data']).map(
+        (kpi) => kpi["2_ERAB Setup Success Rate"]
+      )
+      let trafficVolumeUL = Object.values(kpiData['data']).map(
+        (kpi) => kpi["Traffic Volume UL (Gbytes)"]
+      )
+
+      let trafficVolumeDL = Object.values(kpiData['data']).map(
+        (kpi) => kpi["Traffic Volume DL (Gbytes)"]
+      )
+      
       setRpcConnectionRateArray(rrcConnectionRate);
+      setUserThroughputDL(userDownloadRate);
+      setUserThroughputUL(userUploadRate);
+      setErabSuccessRate(erabSuccessRate);
+      setTrafficVolumeUL(trafficVolumeUL);
+      setTrafficVolumeDL(trafficVolumeDL);
       setFileUploaded(true);
     } catch (error) {
       console.error("Error fetching KPI data:", error);
@@ -80,7 +107,6 @@ export default function Dashboard(props) {
     whiteSpace: "nowrap",
     width: 1,
   });
-  //const matches = useMediaQuery("(min-width:1100px)");
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
@@ -120,7 +146,14 @@ export default function Dashboard(props) {
                   </TabList>
                 </Box>
                 <TabPanel value="1">
-                  <MainGrid kpiDataProp={rpcConnectionRateArray} />
+                  <MainGrid 
+                  rrcConnectionRateProp={rpcConnectionRateArray} 
+                  userDownloadRate = {userThroughputDL}
+                  userUploadRate = {userThroughputUL}
+                  erabSuccessRateProp = {erabSuccessRate}
+                  uploadtTrafficProp = {trafficVolumeUL}
+                  downloadTrafficProp = {trafficVolumeDL}
+                  />
                 </TabPanel>
                 <TabPanel value="2">
                   <Typography>No Data found</Typography>
