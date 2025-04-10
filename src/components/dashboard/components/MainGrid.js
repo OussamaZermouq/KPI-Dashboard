@@ -12,6 +12,7 @@ import PageViewsBarChart from "./PageViewsBarChart";
 import SessionsChart from "./SessionsChart";
 import StatCard from "./StatCard";
 import ThroughtputLineChart from "./custom/ThroughtputLineChart";
+import SessionContinuityBarchart from "./custom/SessionContinuityBarchart";
 
 export default function MainGrid({
   rrcConnectionRateProp,
@@ -22,6 +23,7 @@ export default function MainGrid({
   downloadTrafficProp,
   hourProp,
   cellAvailabilityProp,
+  sessionContinuityProp,
 }) {
   const [rrcConnectionRate, setRrcConnectionRate] = useState(
     rrcConnectionRateProp
@@ -34,6 +36,9 @@ export default function MainGrid({
   const [cellAvailability, setCellAvailability] =
     useState(cellAvailabilityProp);
   const [hours, setHours] = useState(hourProp);
+  const [sessionContinuity, setSessionContinuity] = useState(
+    sessionContinuityProp
+  );
 
   const [rrcConnectionRateAvg, setRrcConnectionRateAvg] = useState(
     rrcConnectionRate.reduce((a, b) => a + b) / rrcConnectionRate.length
@@ -47,10 +52,6 @@ export default function MainGrid({
   const [erabSuccessRateAvg, setErabSuccessRateAvg] = useState(
     erabSuccessRate.reduce((a, b) => a + b) / erabSuccessRate.length
   );
-
-  useEffect(() => {
-    console.log(downloadTraffic);
-  });
 
   const data = [
     {
@@ -117,11 +118,34 @@ export default function MainGrid({
           />
         </Grid>
       </Grid>
-      <Grid container spacing={2} columns={12}>
+      <Grid container spacing={2} columns={1}>
         <Grid size={{ xs: 12, lg: 9 }}>
-          <ThroughtputLineChart />
+          <ThroughtputLineChart
+            throughtputDataUlProp={userThroughputUL}
+            throughtputDataDlProp={userThroughputDL}
+            hoursDataProp={hours}
+          />
         </Grid>
       </Grid>
+
+      <Grid
+        container
+        spacing={2}
+        columns={12}
+        sx={{ mb: (theme) => theme.spacing(2) }}
+      >
+        <Grid size={{ xs: 12, md: 6 }}>
+          <ThroughtputLineChart
+            throughtputDataUlProp={userThroughputUL}
+            throughtputDataDlProp={userThroughputDL}
+            hoursDataProp={hours}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          {/* <SessionContinuityBarchart /> */}
+        </Grid>
+      </Grid>
+
       {/*      
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Details

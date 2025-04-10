@@ -44,6 +44,7 @@ export default function Dashboard(props) {
   const [trafficVolumeDL, setTrafficVolumeDL] = useState([]);
   const [hours, setHours] = useState([]);
   const [cellAvailability, setCellAvailability] = useState([]);
+  const [sessionContinuityData, setSeesionContinuityData] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -86,7 +87,10 @@ export default function Dashboard(props) {
       )
       let cellAvailability = Object.values(kpiData["data"]).map(
         (kpi) => kpi["10_Cell Availability"]
-      )      
+      )
+      let sessionContinuity = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["9_LTE Session Continuity"]
+      )
       setRpcConnectionRateArray(rrcConnectionRate);
       setUserThroughputDL(userDownloadRate);
       setUserThroughputUL(userUploadRate);
@@ -95,6 +99,7 @@ export default function Dashboard(props) {
       setTrafficVolumeDL(trafficVolumeDL);
       setHours(hourData);
       setCellAvailability(cellAvailability);
+      setSeesionContinuityData(sessionContinuity);
       setFileUploaded(true);
     } catch (error) {
       console.error("Error fetching KPI data:", error);
@@ -162,6 +167,8 @@ export default function Dashboard(props) {
                   downloadTrafficProp = {trafficVolumeDL}
                   hourProp = {hours}
                   cellAvailabilityProp ={cellAvailability}
+                  sessionContinuityProp = {sessionContinuityData}
+                  hoursDataProp = {hours}
                   />
                 </TabPanel>
                 <TabPanel value="2">
