@@ -25,6 +25,7 @@ export default function MainGrid({
   cellAvailabilityProp,
   sessionContinuityProp,
 }) {
+
   const [rrcConnectionRate, setRrcConnectionRate] = useState(
     rrcConnectionRateProp
   );
