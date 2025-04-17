@@ -33,7 +33,7 @@ const xThemeComponents = {
   ...datePickersCustomizations,
   ...treeViewCustomizations,
 };
-export default function Dashboard(props) {
+export default function Dashboard({ onLogout, ...props }) {
   const [value, setValue] = React.useState("1");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [sheetsNames, setSheetNames] = useState([]);
@@ -129,7 +129,7 @@ export default function Dashboard(props) {
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenu />
+        <SideMenu onLogout={onLogout} />
         <AppNavbar />
         <Box
           component="main"
