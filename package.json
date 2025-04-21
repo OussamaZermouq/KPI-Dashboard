@@ -27,6 +27,7 @@
     "react-router-dom": "^7.5.0",
     "react-scripts": "5.0.1",
     "react-spring": "^9.7.5",
+    "recharts": "^2.15.2",
     "styled-components": "^6.1.16",
     "web-vitals": "^2.1.4"
   },

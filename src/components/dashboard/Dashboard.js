@@ -33,7 +33,7 @@ const xThemeComponents = {
   ...datePickersCustomizations,
   ...treeViewCustomizations,
 };
-export default function Dashboard(props) {
+export default function Dashboard({ onLogout, ...props }) {
   const [value, setValue] = React.useState("1");
   const [file, setFile] = useState();
   const [fileUploaded, setFileUploaded] = useState(false);
@@ -71,6 +71,7 @@ export default function Dashboard(props) {
     console.log(selectedSheetName);
     console.log(fileUploaded);
     setLoading(true);
+    setUploadedFile(file);
     try {
       const kpiData = await getKPI(sheetName, file);
       if (!kpiData || !kpiData["data"]) {
@@ -86,16 +87,24 @@ export default function Dashboard(props) {
         (kpi) => kpi["6_User throughput DL"]
       );
       let userUploadRate = Object.values(kpiData["data"]).map(
+      let userUploadRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["7_User throughtput UL"]
+      );
+      let erabSuccessRate = Object.values(kpiData["data"]).map(
       );
       let erabSuccessRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["2_ERAB Setup Success Rate"]
       );
       let trafficVolumeUL = Object.values(kpiData["data"]).map(
+      );
+      let trafficVolumeUL = Object.values(kpiData["data"]).map(
         (kpi) => kpi["Traffic Volume UL (Gbytes)"]
       );
       let trafficVolumeDL = Object.values(kpiData["data"]).map(
+      );
+      let trafficVolumeDL = Object.values(kpiData["data"]).map(
         (kpi) => kpi["Traffic Volume DL (Gbytes)"]
+      );
       );
       let cellAvailability = Object.values(kpiData["data"]).map(
         (kpi) => kpi["10_Cell Availability"]
@@ -134,7 +143,7 @@ export default function Dashboard(props) {
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenu />
+        <SideMenu onLogout={onLogout} />
         <AppNavbar />
         <Box
           component="main"
