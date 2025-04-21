@@ -13,6 +13,8 @@ import SessionsChart from "./SessionsChart";
 import StatCard from "./StatCard";
 import ThroughtputLineChart from "./custom/ThroughtputLineChart";
 import SessionContinuityBarchart from "./custom/SessionContinuityBarchart";
+import KpiDataGrid from "./KpiDataGrid";
+import ContentTable from "./ContentTable";
 
 export default function MainGrid({
   rrcConnectionRateProp,
@@ -24,33 +26,38 @@ export default function MainGrid({
   hourProp,
   cellAvailabilityProp,
   sessionContinuityProp,
+  sheetName, // Add sheetName as a prop
+  uploadedFile, // Add uploadedFile as a prop
 }) {
-  const [rrcConnectionRate, setRrcConnectionRate] = useState(
-    rrcConnectionRateProp
-  );
+  const [rrcConnectionRate, setRrcConnectionRate] = useState(rrcConnectionRateProp);
   const [userThroughputDL, setUserThroughtputDL] = useState(userDownloadRate);
   const [userThroughputUL, setUserThroughtputUL] = useState(userUploadRate);
   const [erabSuccessRate, setErabSuccessRate] = useState(erabSuccessRateProp);
   const [uploadtTraffic, setUploadtTraffic] = useState(uploadtTrafficProp);
   const [downloadTraffic, setDownloadtTraffic] = useState(downloadTrafficProp);
-  const [cellAvailability, setCellAvailability] =
-    useState(cellAvailabilityProp);
+  const [cellAvailability, setCellAvailability] = useState(cellAvailabilityProp);
   const [hours, setHours] = useState(hourProp);
-  const [sessionContinuity, setSessionContinuity] = useState(
-    sessionContinuityProp
-  );
+  const [sessionContinuity, setSessionContinuity] = useState(sessionContinuityProp);
 
   const [rrcConnectionRateAvg, setRrcConnectionRateAvg] = useState(
-    rrcConnectionRate.reduce((a, b) => a + b) / rrcConnectionRate.length
+    rrcConnectionRate.length > 0
+      ? rrcConnectionRate.reduce((a, b) => a + b, 0) / rrcConnectionRate.length
+      : 0
   );
   const [userThroughputDLAvg, setUserThroughputDLAvg] = useState(
-    userThroughputDL.reduce((a, b) => a + b) / userThroughputDL.length
+    userThroughputDL.length > 0
+      ? userThroughputDL.reduce((a, b) => a + b, 0) / userThroughputDL.length
+      : 0
   );
   const [userThroughputULAvg, setUserThroughputULAvg] = useState(
-    userThroughputUL.reduce((a, b) => a + b) / userThroughputUL.length
+    userThroughputUL.length > 0
+      ? userThroughputUL.reduce((a, b) => a + b, 0) / userThroughputUL.length
+      : 0
   );
   const [erabSuccessRateAvg, setErabSuccessRateAvg] = useState(
-    erabSuccessRate.reduce((a, b) => a + b) / erabSuccessRate.length
+    erabSuccessRate.length > 0
+      ? erabSuccessRate.reduce((a, b) => a + b, 0) / erabSuccessRate.length
+      : 0
   );
 
   const data = [
@@ -87,6 +94,7 @@ export default function MainGrid({
       hours: hours,
     },
   ];
+
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
       {/* cards */}
@@ -145,23 +153,11 @@ export default function MainGrid({
           {/* <SessionContinuityBarchart /> */}
         </Grid>
       </Grid>
-
-      {/*      
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Details
-      </Typography>
-      
-      <Grid container spacing={2} columns={12}>
+      <Grid container spacing={2} columns={1}>
         <Grid size={{ xs: 12, lg: 9 }}>
-          <CustomizedDataGrid />
+          <ContentTable sheetName={sheetName} file={uploadedFile} />
         </Grid>
-        <Grid size={{ xs: 12, lg: 3 }}>
-          <Stack gap={2} direction={{ xs: 'column', sm: 'row', lg: 'column' }}>
-            <CustomizedTreeView />
-            <ChartUserByCountry />
-          </Stack>
-        </Grid> 
-      </Grid> */}
+      </Grid>
       <Copyright sx={{ my: 4 }} />
     </Box>
   );

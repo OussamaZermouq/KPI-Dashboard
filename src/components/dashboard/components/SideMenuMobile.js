@@ -12,7 +12,7 @@ import MenuButton from './MenuButton';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
 
-function SideMenuMobile({ open, toggleDrawer }) {
+function SideMenuMobile({ open, toggleDrawer, onLogout }) {
   return (
     <Drawer
       anchor="right"
@@ -58,7 +58,12 @@ function SideMenuMobile({ open, toggleDrawer }) {
         </Stack>
         <CardAlert />
         <Stack sx={{ p: 2 }}>
-          <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
+          <Button
+            variant="outlined"
+            fullWidth
+            startIcon={<LogoutRoundedIcon />}
+            onClick={onLogout}
+          >
             Logout
           </Button>
         </Stack>
@@ -70,6 +75,7 @@ function SideMenuMobile({ open, toggleDrawer }) {
 SideMenuMobile.propTypes = {
   open: PropTypes.bool,
   toggleDrawer: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
 export default SideMenuMobile;

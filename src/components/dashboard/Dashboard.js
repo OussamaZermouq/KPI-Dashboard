@@ -25,6 +25,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import KpiDataGrid from "./components/KpiDataGrid";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -32,7 +33,7 @@ const xThemeComponents = {
   ...datePickersCustomizations,
   ...treeViewCustomizations,
 };
-export default function Dashboard(props) {
+export default function Dashboard({ onLogout, ...props }) {
   const [value, setValue] = React.useState("1");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,17 +46,16 @@ export default function Dashboard(props) {
   const [hours, setHours] = useState([]);
   const [cellAvailability, setCellAvailability] = useState([]);
   const [sessionContinuityData, setSeesionContinuityData] = useState([]);
+  const [processedKpiData, setProcessedKpiData] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  // useEffect(() => {
-  //   console.log("Updated rpcConnectionRateArray:", rpcConnectionRateArray);
-  // }, [rpcConnectionRateArray]); // used for logs, remove after testing
-
   const handleUploadFile = async (file) => {
     setLoading(true);
+    setUploadedFile(file);
     try {
       const kpiData = await getKPI("Hourly Ville", file);
 
@@ -63,34 +63,34 @@ export default function Dashboard(props) {
         console.error("Invalid KPI data received:", kpiData);
         return;
       }
-      let hourData = Object.values(kpiData['data']).map(
-        (kpi) => kpi["Hour"]
-      )
+
+      let hourData = Object.values(kpiData["data"]).map((kpi) => kpi["Hour"]);
       let rrcConnectionRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["1_RRC Connection Success Rate"]
       );
-      
       let userDownloadRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["6_User throughput DL"]
       );
-      let userUploadRate = Object.values(kpiData['data']).map(
+      let userUploadRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["7_User throughtput UL"]
-      )
-      let erabSuccessRate = Object.values(kpiData['data']).map(
+      );
+      let erabSuccessRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["2_ERAB Setup Success Rate"]
-      )
-      let trafficVolumeUL = Object.values(kpiData['data']).map(
+      );
+      let trafficVolumeUL = Object.values(kpiData["data"]).map(
         (kpi) => kpi["Traffic Volume UL (Gbytes)"]
-      )
-      let trafficVolumeDL = Object.values(kpiData['data']).map(
+      );
+      let trafficVolumeDL = Object.values(kpiData["data"]).map(
         (kpi) => kpi["Traffic Volume DL (Gbytes)"]
-      )
+      );
       let cellAvailability = Object.values(kpiData["data"]).map(
         (kpi) => kpi["10_Cell Availability"]
-      )
+      );
       let sessionContinuity = Object.values(kpiData["data"]).map(
         (kpi) => kpi["9_LTE Session Continuity"]
-      )
+      );
+
+      // Set individual KPI arrays
       setRpcConnectionRateArray(rrcConnectionRate);
       setUserThroughputDL(userDownloadRate);
       setUserThroughputUL(userUploadRate);
@@ -100,6 +100,7 @@ export default function Dashboard(props) {
       setHours(hourData);
       setCellAvailability(cellAvailability);
       setSeesionContinuityData(sessionContinuity);
+
       setFileUploaded(true);
     } catch (error) {
       console.error("Error fetching KPI data:", error);
@@ -123,7 +124,7 @@ export default function Dashboard(props) {
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenu />
+        <SideMenu onLogout={onLogout} />
         <AppNavbar />
         <Box
           component="main"
@@ -158,17 +159,18 @@ export default function Dashboard(props) {
                   </TabList>
                 </Box>
                 <TabPanel value="1">
-                  <MainGrid 
-                  rrcConnectionRateProp={rpcConnectionRateArray} 
-                  userDownloadRate = {userThroughputDL}
-                  userUploadRate = {userThroughputUL}
-                  erabSuccessRateProp = {erabSuccessRate}
-                  uploadtTrafficProp = {trafficVolumeUL}
-                  downloadTrafficProp = {trafficVolumeDL}
-                  hourProp = {hours}
-                  cellAvailabilityProp ={cellAvailability}
-                  sessionContinuityProp = {sessionContinuityData}
-                  hoursDataProp = {hours}
+                  <MainGrid
+                    rrcConnectionRateProp={rpcConnectionRateArray}
+                    userDownloadRate={userThroughputDL}
+                    userUploadRate={userThroughputUL}
+                    erabSuccessRateProp={erabSuccessRate}
+                    uploadtTrafficProp={trafficVolumeUL}
+                    downloadTrafficProp={trafficVolumeDL}
+                    hourProp={hours}
+                    cellAvailabilityProp={cellAvailability}
+                    sessionContinuityProp={sessionContinuityData}
+                    sheetName="Hourly Ville" // Pass the sheet name
+                    uploadedFile={uploadedFile} // Pass the uploaded file
                   />
                 </TabPanel>
                 <TabPanel value="2">
