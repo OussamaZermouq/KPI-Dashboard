@@ -46,7 +46,38 @@ export default function Dashboard({ onLogout, ...props }) {
   const [hours, setHours] = useState([]);
   const [cellAvailability, setCellAvailability] = useState([]);
   const [sessionContinuityData, setSeesionContinuityData] = useState([]);
+  const [intraFrequencyHOSR, setIntraFrequencyHOSR] = useState([]);
+  const [lteSessionContinuity, setLteSessionContinuity] = useState([]);
+  const [pmCellDowntimeAuto, setPmCellDowntimeAuto] = useState([]);
+  const [pmCellDowntimeMan, setPmCellDowntimeMan] = useState([]);
+  const [trafficVolumeULGbytes, setTrafficVolumeULGbytes] = useState([]);
+  const [trafficVolumeDLGbytes, setTrafficVolumeDLGbytes] = useState([]);
+  const [activeUsers, setActiveUsers] = useState([]);
+  const [pmActiveUeDlSum, setPmActiveUeDlSum] = useState([]);
+  const [csfbToUMTS, setCsfbToUMTS] = useState([]);
+  const [csfbToGSM, setCsfbToGSM] = useState([]);
+  const [userThroughputDLCA, setUserThroughputDLCA] = useState([]);
+  const [csfbSR, setCsfbSR] = useState([]);
+  const [prbULNew, setPrbULNew] = useState([]);
+  const [cqi, setCqi] = useState([]);
+  const [prbDLNew, setPrbDLNew] = useState([]);
+  const [sinrPuschdB, setSinrPuschdB] = useState([]);
+  const [qpsk, setQpsk] = useState([]);
+  const [qam16, setQam16] = useState([]);
+  const [qam64, setQam64] = useState([]);
+  const [qam256, setQam256] = useState([]);
+  const [spectralEfficiency, setSpectralEfficiency] = useState([]);
+  const [userThroughputULCA, setUserThroughputULCA] = useState([]);
+  const [rssiDbm, setRssiDbm] = useState([]);
+  const [rssiPUCCHDbm, setRssiPUCCHDbm] = useState([]);
+  const [dlRLCBlerRate, setDlRLCBlerRate] = useState([]);
+  const [ulRLCBlerRate, setUlRLCBlerRate] = useState([]);
+  const [city, setCity] = useState([]);
+
+
+
   const [processedKpiData, setProcessedKpiData] = useState([]);
+
   const [uploadedFile, setUploadedFile] = useState(null);
 
   const handleChange = (event, newValue) => {
@@ -65,30 +96,28 @@ export default function Dashboard({ onLogout, ...props }) {
       }
 
       let hourData = Object.values(kpiData["data"]).map((kpi) => kpi["Hour"]);
-      let rrcConnectionRate = Object.values(kpiData["data"]).map(
-        (kpi) => kpi["1_RRC Connection Success Rate"]
-      );
-      let userDownloadRate = Object.values(kpiData["data"]).map(
-        (kpi) => kpi["6_User throughput DL"]
-      );
-      let userUploadRate = Object.values(kpiData["data"]).map(
-        (kpi) => kpi["7_User throughtput UL"]
-      );
-      let erabSuccessRate = Object.values(kpiData["data"]).map(
-        (kpi) => kpi["2_ERAB Setup Success Rate"]
-      );
-      let trafficVolumeUL = Object.values(kpiData["data"]).map(
-        (kpi) => kpi["Traffic Volume UL (Gbytes)"]
-      );
-      let trafficVolumeDL = Object.values(kpiData["data"]).map(
-        (kpi) => kpi["Traffic Volume DL (Gbytes)"]
-      );
-      let cellAvailability = Object.values(kpiData["data"]).map(
-        (kpi) => kpi["10_Cell Availability"]
-      );
-      let sessionContinuity = Object.values(kpiData["data"]).map(
-        (kpi) => kpi["9_LTE Session Continuity"]
-      );
+      let rrcConnectionRate = Object.values(kpiData["data"]).map((kpi) => kpi["1_RRC Connection Success Rate"]);
+      let userDownloadRate = Object.values(kpiData["data"]).map((kpi) => kpi["6_User throughput DL"]);
+      let userUploadRate = Object.values(kpiData["data"]).map((kpi) => kpi["7_User throughtput UL"]);
+      let erabSuccessRate = Object.values(kpiData["data"]).map((kpi) => kpi["2_ERAB Setup Success Rate"]);
+      let trafficVolumeUL = Object.values(kpiData["data"]).map((kpi) => kpi["Traffic Volume UL (Gbytes)"]);
+      let trafficVolumeDL = Object.values(kpiData["data"]).map((kpi) => kpi["Traffic Volume DL (Gbytes)"]);
+      let cellAvailability = Object.values(kpiData["data"]).map((kpi) => kpi["10_Cell Availability"]);
+      let sessionContinuity = Object.values(kpiData["data"]).map((kpi) => kpi["9_LTE Session Continuity"]);
+      let intraFrequencyHOSR = Object.values(kpiData["data"]).map((kpi) => kpi["Intra Frequency HOSR"]);
+      let lteSessionContinuity = Object.values(kpiData["data"]).map((kpi) => kpi["LTE Session Continuity"]);
+      let pmCellDowntimeAuto = Object.values(kpiData["data"]).map((kpi) => kpi["PM Cell Downtime Auto"]);
+      let pmCellDowntimeMan = Object.values(kpiData["data"]).map((kpi) => kpi["PM Cell Downtime Manual"]);
+      let trafficVolumeULGbytes = Object.values(kpiData["data"]).map((kpi) => kpi["Traffic Volume UL (Gbytes)"]);
+      let trafficVolumeDLGbytes = Object.values(kpiData["data"]).map((kpi) => kpi["Traffic Volume DL (Gbytes)"]);
+      let city = Object.values(kpiData["data"]).map((kpi) => kpi["city"]);
+
+
+
+
+
+
+
 
       // Set individual KPI arrays
       setRpcConnectionRateArray(rrcConnectionRate);
@@ -100,6 +129,9 @@ export default function Dashboard({ onLogout, ...props }) {
       setHours(hourData);
       setCellAvailability(cellAvailability);
       setSeesionContinuityData(sessionContinuity);
+      setIntraFrequencyHOSR(intraFrequencyHOSR);
+      setCity(city);
+
 
       setFileUploaded(true);
     } catch (error) {
@@ -169,8 +201,13 @@ export default function Dashboard({ onLogout, ...props }) {
                     hourProp={hours}
                     cellAvailabilityProp={cellAvailability}
                     sessionContinuityProp={sessionContinuityData}
-                    sheetName="Hourly Ville" // Pass the sheet name
-                    uploadedFile={uploadedFile} // Pass the uploaded file
+                    IntraFrequencyHOSRProp={intraFrequencyHOSR}
+                    LTE_Session_ContinuityProb={lteSessionContinuity}
+                    pmCellDowntimeAutoProp={pmCellDowntimeAuto}
+                    pmCellDowntimeManProp={pmCellDowntimeMan}
+                    TrafficVolumeUL_GbytesProp={trafficVolumeULGbytes}
+                    TrafficVolumeDL_GbytesProp={trafficVolumeDLGbytes}  
+                    city={city}
                   />
                 </TabPanel>
                 <TabPanel value="2">

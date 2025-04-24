@@ -1,66 +1,97 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect } from "react";
 import KpiDataGrid from "./KpiDataGrid";
-import { getKPI } from "../../../service/kpiService";
 
-export default function ContentTable({ sheetName, file }) {
-  const [kpiData, setKpiData] = useState({
-    cellAvailability: [],
-    hours: [],
-    rrcConnectionRate: [],
-    userDownloadRate: [],
-    userUploadRate: [],
-    erabSuccessRate: [],
-    uploadTraffic: [],
-    downloadTraffic: [],
-    sessionContinuity: [],
-    City: [],
-    IntraFrequencyHOSR: [],
-  });
-
-  const fetchKpiData = useCallback(async () => {
-    const data = await getKPI(sheetName, file);
-    console.log('Raw KPI data:', data); // Log the raw data returned from getKPI
-    if (data && data.data) {
-      setKpiData({
-        cellAvailability: data.data.map((kpi) => kpi["10_Cell Availability"]),
-        hours: data.data.map((kpi) => kpi["Hour"]),
-        rrcConnectionRate: data.data.map((kpi) => kpi["1_RRC Connection Success Rate"]),
-        userDownloadRate: data.data.map((kpi) => kpi["6_User throughput DL"]),
-        userUploadRate: data.data.map((kpi) => kpi["7_User throughtput UL"]),
-        erabSuccessRate: data.data.map((kpi) => kpi["2_ERAB Setup Success Rate"]),
-        uploadTraffic: data.data.map((kpi) => kpi["Traffic Volume UL (Gbytes)"]),
-        downloadTraffic: data.data.map((kpi) => kpi["Traffic Volume DL (Gbytes)"]),
-        sessionContinuity: data.data.map((kpi) => kpi["9_LTE Session Continuity"]),
-        City: data.data.map((kpi) => kpi["City"]),
-        IntraFrequencyHOSR: data.data.map((kpi) => kpi["4_Intra Frequency HOSR"]),
-      });
-    }
-  }, [sheetName, file]);
-
+function ContentTable({
+  rrcConnectionRateProp,
+  userDownloadRate,
+  userUploadRate,
+  erabSuccessRateProp,
+  uploadtTrafficProp,
+  downloadTrafficProp,
+  hourProp,
+  cellAvailabilityProp,
+  sessionContinuityProp,
+  IntraFrequencyHOSRProp,
+  LTE_Session_ContinuityProb,
+  pmCellDowntimeAutoProp,
+  pmCellDowntimeManProp,
+  TrafficVolumeUL_GbytesProp,
+  TrafficVolumeDL_GbytesProp,
+  Active_usersProp,
+  pmActiveUeDlSumProp,
+  _CSFBtoUMTSProp,
+  _CSFBtoGSMProp,
+  UserthroughputDLCAProp,
+  CSFB_SR__Prop,
+  PRB_UL_NewProp,
+  CQIProp,
+  PRB_DL_NewProp,
+  SINR_PuschdBProp,  
+  QPSK__Prop,
+  _16QAM__Prop,
+  _64QAM__Prop,
+  _256QAM__Prop,
+  SpectralEfficiencybpshz__Prop,
+  UserthroughputULCAProp,
+  RSSI_dbmProp,
+  RSSI_PUCCHdBmProp,
+  DLRLCBlerRate_Prop,
+  ULRLCBlerRate_Prop,
+  CellThroughputDLMbps_Prop,
+  CellThroughputULMps_Prop,
+  AverageDLUELatency_Prop,
+  hoursProp,
+  CityProp,
+}) {
+  // Add useEffect for debugging, similar to ThroughtputLineChart
   useEffect(() => {
-    if (sheetName && file) {
-      fetchKpiData();
-    }
-  }, [sheetName, file, fetchKpiData]);
-  console.log("file name is "+file, +"  sheet name is : "+ sheetName);
-
-  useEffect(() => {
-    console.log('cellAvailability_test good:', kpiData.cellAvailability);
-  }, [kpiData]);
+    console.log('cellAvailabilityProp:', cellAvailabilityProp);
+    // You can log other props as needed
+  }, [cellAvailabilityProp]);
 
   return (
     <KpiDataGrid
-      cellAvailabilityProp={kpiData.cellAvailability || []}
-      hoursProp={kpiData.hours || []}
-      rrcConnectionRateProp={kpiData.rrcConnectionRate || []}
-      userDownloadRate={kpiData.userDownloadRate || []}
-      userUploadRate={kpiData.userUploadRate || []}
-      erabSuccessRateProp={kpiData.erabSuccessRate || []}
-      uploadtTrafficProp={kpiData.uploadTraffic || []}
-      downloadTrafficProp={kpiData.downloadTraffic || []}
-      sessionContinuityProp={kpiData.sessionContinuity ||[]}
-      City={kpiData.City || []}
-      IntraFrequencyHOSR={kpiData.IntraFrequencyHOSR || []}
+      cellAvailabilityProp={cellAvailabilityProp}
+      hoursProp={hoursProp}
+      rrcConnectionRateProp={rrcConnectionRateProp}
+      userDownloadRate={userDownloadRate}
+      userUploadRate={userUploadRate}
+      erabSuccessRateProp={erabSuccessRateProp}
+      uploadtTrafficProp={uploadtTrafficProp}
+      downloadTrafficProp={downloadTrafficProp}
+      sessionContinuityProp={sessionContinuityProp}
+      City={CityProp}
+      IntraFrequencyHOSR={IntraFrequencyHOSRProp}
+      LTE_Session_ContinuityProb={LTE_Session_ContinuityProb}
+      pmCellDowntimeAutoProp={pmCellDowntimeAutoProp}
+      pmCellDowntimeManProp={pmCellDowntimeManProp}
+      TrafficVolumeUL_GbytesProp={TrafficVolumeUL_GbytesProp}
+      TrafficVolumeDL_GbytesProp={TrafficVolumeDL_GbytesProp}
+      Active_usersProp={Active_usersProp}
+      pmActiveUeDlSumProp={pmActiveUeDlSumProp}
+      _CSFBtoUMTSProp={_CSFBtoUMTSProp}
+      _CSFBtoGSMProp={_CSFBtoGSMProp}
+      UserthroughputDLCAProp={UserthroughputDLCAProp}
+      CSFB_SR__Prop={CSFB_SR__Prop}
+      PRB_UL_NewProp={PRB_UL_NewProp}
+      CQIProp={CQIProp}
+      PRB_DL_NewProp={PRB_DL_NewProp}
+      SINR_PuschdBProp={SINR_PuschdBProp}
+      QPSK__Prop={QPSK__Prop}
+      _16QAM__Prop={_16QAM__Prop}
+      _64QAM__Prop={_64QAM__Prop}
+      _256QAM__Prop={_256QAM__Prop}
+      SpectralEfficiencybpshz__Prop={SpectralEfficiencybpshz__Prop}
+      UserthroughputULCAProp={UserthroughputULCAProp}
+      RSSI_dbmProp={RSSI_dbmProp}
+      RSSI_PUCCHdBmProp={RSSI_PUCCHdBmProp}
+      DLRLCBlerRate_Prop={DLRLCBlerRate_Prop}
+      ULRLCBlerRate_Prop={ULRLCBlerRate_Prop}
+      CellThroughputDLMbps_Prop={CellThroughputDLMbps_Prop}
+      CellThroughputULMps_Prop={CellThroughputULMps_Prop}
+      //AverageDLUELatency_Prop={AverageDLUELatency_Prop}
     />
   );
 }
+
+export default ContentTable;
