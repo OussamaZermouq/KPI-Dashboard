@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import emailjs from "emailjs-com";
 
 export default function Signup({ onClose }) {
   const [name, setName] = useState("");
@@ -9,23 +8,26 @@ export default function Signup({ onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // EmailJS configuration
-    const serviceID = "service_gxhl8xb"; // Replace with your EmailJS service ID
-    const templateID = "template_7xgnnht"; // Replace with your EmailJS template ID
-    const userID = "YyKhji9TdQUJ-oNn4"; // Replace with your EmailJS user ID
+    const endpoint = "https://getform.io/f/axowqxrb";
 
-    const templateParams = {
-      name: name,
-      email: email,
-      admin_email: "medaminekhaddi@gmail.com", // Administrator's email
-    };
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
 
     try {
-      await emailjs.send(serviceID, templateID, templateParams,userID);
-      alert("Signup information sent to the administrator!");
-      if (onClose) onClose(); // Close the form if a callback is provided
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+      });
+        console.log("Response:", response); // Log the response for debugging
+      if (response.ok) {
+        alert("Signup information sent to the administrator!");
+        if (onClose) onClose();
+      } else {
+        throw new Error("Network response was not ok");
+      }
     } catch (error) {
-      console.error("Failed to send email:", error);
+      console.error("Failed to send form:", error);
       alert("Failed to send signup information. Please try again.");
     }
   };

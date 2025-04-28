@@ -118,7 +118,7 @@ export default function SingupComponent(props) {
     return isValid;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit_ = async (e) => {
     e.preventDefault();
     if ( lastNameError || firstNameError || emailError || passwordError) {
       e.preventDefault();
@@ -142,6 +142,32 @@ export default function SingupComponent(props) {
       alert("Signup information sent to the administrator!");
     } catch (error) {
       console.error("Failed to send email:", error);
+      alert("Failed to send signup information. Please try again.");
+    }
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const endpoint = "https://getform.io/f/axowqxrb";
+
+    const formData = new FormData(e.currentTarget);
+    formData.append("name", formData.get('firstName'));
+    formData.append("email", formData.get('email'));
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+      });
+        console.log("Response:", response); // Log the response for debugging
+      if (response.redirected) {
+        alert("Signup information sent to the administrator!");
+       
+      } else {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.error("Failed to send form:", error);
       alert("Failed to send signup information. Please try again.");
     }
   };
