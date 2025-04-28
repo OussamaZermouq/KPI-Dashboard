@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { alpha } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -10,8 +10,14 @@ import MainGrid from "./components/MainGrid";
 import SideMenu from "./components/SideMenu";
 import AppTheme from "../shared-theme/AppTheme";
 import { getKPI, getSheetNames } from "../../service/kpiService";
-import { Paper, Typography, Button, useMediaQuery } from "@mui/material";
-
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  Paper,
+  Typography,
+  Button,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
@@ -55,7 +61,7 @@ export default function Dashboard({ onLogout, ...props }) {
     setValue(newValue);
   };
 
-  //1 after upload 
+  //1 handle upload
   const handleUploadFile = async (file) => {
     setFile(file);
     const sheetsNamesData = await getSheetNames(file);
@@ -65,7 +71,7 @@ export default function Dashboard({ onLogout, ...props }) {
 
     setFileUploaded(true);
   };
-  //2 after sheetname selection
+  //2 handle sheetname selection
 
   const handleSheetNameSelected = async (sheetName) => {
     console.log(selectedSheetName);
@@ -120,16 +126,102 @@ export default function Dashboard({ onLogout, ...props }) {
     }
   };
 
+  const UploadFileComponent = () => {
+    return (
+      <>
+        <VisuallyHiddenInput type="file" onChange={handleUploadFile} />
+        <Card
+          sx={{
+            width: "50%",
+            height: "80%",
+          }}
+          onClick={(e) => {
+            <VisuallyHiddenInput />;
+          }}
+        >
+          <CardActionArea
+            sx={{
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <CardContent
+              sx={{
+                height: "100%",
+                width: "100%",
+              }}
+            >
+              <Paper
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  console.log("ON DRAG OVER");
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  console.log("ON DROP");
+                }}
+                sx={{
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                <Box
+                  sx={{
+                    height: "100%",
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 4,
+                    p: 5,
+                    border: "12px dashed lightgrey",
+                    borderRadius: 10,
+                  }}
+                >
+                   <CloudUploadIcon
+                    style={{
+                      fontSize: "100px",
+                      color: "lightgray",
+                    }}
+                  />
+                  <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                  >
+                    <VisuallyHiddenInput
+                      type="file"
+                      onChange={(event) =>
+                        handleUploadFile(event.target.files[0])
+                      }
+                    />
+
+                    <Typography variant="h6">
+                      Click or drag file to upload
+                    </Typography>
+                  </Button>
+
+                 
+                </Box>
+              </Paper>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </>
+    );
+  };
+
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
     height: 1,
+    width: 1,
     overflow: "hidden",
     position: "absolute",
     bottom: 0,
     left: 0,
     whiteSpace: "nowrap",
-    width: 1,
   });
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
@@ -166,69 +258,47 @@ export default function Dashboard({ onLogout, ...props }) {
                 onDialogClose={() => setShowSheetDialog(false)}
               />
             )}
-            {fileUploaded && selectedSheetName && !showSheetDialog && !loading && (
-              <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <TabList
-                    onChange={handleChange}
-                    aria-label="lab API tabs example"
-                  >
-                    <Tab label="4G" value="1" />
-                    <Tab label="3G" value="2" />
-                    <Tab label="2G" value="3" />
-                  </TabList>
-                </Box>
-                <TabPanel value="1">
-                  <MainGrid
-                    rrcConnectionRateProp={rpcConnectionRateArray}
-                    userDownloadRate={userThroughputDL}
-                    userUploadRate={userThroughputUL}
-                    erabSuccessRateProp={erabSuccessRate}
-                    uploadtTrafficProp={trafficVolumeUL}
-                    downloadTrafficProp={trafficVolumeDL}
-                    hourProp={hours}
-                    cellAvailabilityProp={cellAvailability}
-                    sessionContinuityProp={sessionContinuityData}
-                    hoursDataProp={hours}
-                  />
-                </TabPanel>
-                <TabPanel value="2">
-                  <Typography>No Data found</Typography>
-                </TabPanel>
-                <TabPanel value="3">
-                  <Typography>No Data found</Typography>
-                </TabPanel>
-              </TabContext>
-            )}
+            {fileUploaded &&
+              selectedSheetName &&
+              !showSheetDialog &&
+              !loading && (
+                <TabContext value={value}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <TabList
+                      onChange={handleChange}
+                      aria-label="lab API tabs example"
+                    >
+                      <Tab label="4G" value="1" />
+                      <Tab label="3G" value="2" />
+                      <Tab label="2G" value="3" />
+                    </TabList>
+                  </Box>
+                  <TabPanel value="1">
+                    <MainGrid
+                      rrcConnectionRateProp={rpcConnectionRateArray}
+                      userDownloadRate={userThroughputDL}
+                      userUploadRate={userThroughputUL}
+                      erabSuccessRateProp={erabSuccessRate}
+                      uploadtTrafficProp={trafficVolumeUL}
+                      downloadTrafficProp={trafficVolumeDL}
+                      hourProp={hours}
+                      cellAvailabilityProp={cellAvailability}
+                      sessionContinuityProp={sessionContinuityData}
+                      hoursDataProp={hours}
+                    />
+                  </TabPanel>
+                  <TabPanel value="2">
+                    <Typography>No Data found</Typography>
+                  </TabPanel>
+                  <TabPanel value="3">
+                    <Typography>No Data found</Typography>
+                  </TabPanel>
+                </TabContext>
+              )}
 
             {!fileUploaded && (
-              <Paper
-                elevation={3}
-                sx={{
-                  p: 4,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  textAlign: "center",
-                }}
-              >
-                <Button
-                  component="label"
-                  role={undefined}
-                  variant="contained"
-                  tabIndex={-1}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Upload a file to analyze
-                  <VisuallyHiddenInput
-                    type="file"
-                    onChange={(event) =>
-                      handleUploadFile(event.target.files[0])
-                    }
-                  />
-                </Button>
-              </Paper>
+                <UploadFileComponent />
+                
             )}
           </Stack>
         </Box>

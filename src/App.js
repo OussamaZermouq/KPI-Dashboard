@@ -1,9 +1,16 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import Dashboard from "./components/dashboard/Dashboard";
-import Login from "./service/Login";
-import Signup from "./service/Signup";
-import OptionsMenu from "./components/dashboard/components/OptionsMenu";
+import LoginComponent from "./components/dashboard/components/custom/LoginComponent";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  
+} from "react-router-dom";
+import SingupComponent from "./components/dashboard/components/custom/SignupComponent";
+import TestComponent from "./components/dashboard/components/custom/test";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -26,23 +33,29 @@ function App() {
     setIsAuthenticated(false); // Update the state to redirect to login
   };
 
-  const handleSignup = () => {
-    setShowSignup(false); // Hide the signup form after successful signup
-  };
+  const handleSignup = () => {};
 
+  const ProtectedRoute = ({ children }) => {
+    const isAuthenticated = !!localStorage.getItem("jwt-token");
+    return isAuthenticated ? children : <Navigate to="/login" replace />;
+  };
   return (
-    <div className="App">
-      {!isAuthenticated ? (
-        showSignup ? (
-          <Signup onClose={() => setShowSignup(false)} onSignup={handleSignup} />
-        ) : (
-          <Login onLogin={handleLogin} onShowSignup={() => setShowSignup(true)} />
-        )
-      ) : (
-        <Dashboard onLogout={handleLogout} />
-      )}
-      {isAuthenticated && <OptionsMenu onLogout={handleLogout} />}
-    </div>
+    <Router>
+      <Routes>
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/login" element={<LoginComponent />} />
+        <Route path="/signup" element={<SingupComponent />} />
+        <Route path="/test" element={<TestComponent />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 

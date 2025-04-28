@@ -4,15 +4,16 @@ import { BarChart } from "@mui/x-charts/BarChart";
 
 export default function SessionContinuityBarchart({
   sessionContinuityDataProp,
-  hoursDataProp
+  hoursDataProp,
 }) {
   const [sessionContinuityData, setSessionContinuity] = useState(
     sessionContinuityDataProp
   );
+  const [hoursData, setHoursData] = useState(hoursDataProp);
 
-  const [hoursData, setHoursData] = useState(
-    hoursDataProp
-  );
+  React.useEffect(() => {
+    console.log(sessionContinuityData);
+  });
   return (
     <BarChart
       series={sessionContinuityData}

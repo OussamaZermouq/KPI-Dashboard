@@ -29,6 +29,7 @@ export default function MainGrid({
   sheetName, // Add sheetName as a prop
   uploadedFile, // Add uploadedFile as a prop
 }) {
+  const [columnNames, setColumnNames] = useState();
   const [rrcConnectionRate, setRrcConnectionRate] = useState(rrcConnectionRateProp);
   const [userThroughputDL, setUserThroughtputDL] = useState(userDownloadRate);
   const [userThroughputUL, setUserThroughtputUL] = useState(userUploadRate);
@@ -136,23 +137,6 @@ export default function MainGrid({
         </Grid>
       </Grid>
 
-      <Grid
-        container
-        spacing={2}
-        columns={12}
-        sx={{ mb: (theme) => theme.spacing(2) }}
-      >
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ThroughtputLineChart
-            throughtputDataUlProp={userThroughputUL}
-            throughtputDataDlProp={userThroughputDL}
-            hoursDataProp={hours}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          {/* <SessionContinuityBarchart /> */}
-        </Grid>
-      </Grid>
       <Grid container spacing={2} columns={1}>
         <Grid size={{ xs: 12, lg: 9 }}>
           <ContentTable sheetName={sheetName} file={uploadedFile} />
