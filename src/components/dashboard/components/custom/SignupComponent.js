@@ -126,16 +126,15 @@ export default function SingupComponent(props) {
     }
 
     const data = new FormData(e.currentTarget);
-    const serviceID = "service_gxhl8xb"; // Replace with your EmailJS service ID
-    const templateID = "template_7xgnnht"; // Replace with your EmailJS template ID
-    const userID = "xvQbznqBbE4Y8ewoW"; // Replace with your EmailJS user ID
+    const serviceID = "service_hlkew4l"; 
+    const templateID = "template_7xgnnht";
+    const userID = "YyKhji9TdQUJ-oNn4";
 
     const templateParams = {
-      name: data.get('firstName'),
+      name: data.get('firstName')+" "+data.get('lastName'),
       email: data.get('email'),
       admin_email: "medaminekhaddi@gmail.com",
     };
-
     try {
       console.log(templateParams)
       await emailjs.send(serviceID, templateID, templateParams, userID);

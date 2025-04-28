@@ -11,7 +11,7 @@ import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
 import Logout from './Logout'; // Import the Logout component
-import Login from '../../../service/Login'; // Import the Login component
+import Login, { decodedJwtToken } from '../../../service/Login'; // Import the Login component
 
 const drawerWidth = 240;
 
@@ -27,7 +27,13 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu({ onLogout, user }) {
-  const userName = user?.email ? user.email.split('@')[0] : 'Guest';
+  const [userEmail, setUserEmail] = React.useState();
+  const [userRole, setUserRole] = React.useState();
+  React.useEffect(()=>{
+    const decodedToken = decodedJwtToken();
+    setUserEmail(decodedToken.sub)
+    setUserRole(decodedToken.role)
+  })
   const handleLogout = () => {
     console.log('User logged out');
     localStorage.removeItem('jwt-token'); // Clear the JWT token from local storage
@@ -62,8 +68,7 @@ export default function SideMenu({ onLogout, user }) {
           flexDirection: 'column',
         }}
       >
-        <MenuContent />
-        <CardAlert />
+        <MenuContent userRole={userRole}/>
       </Box>
       <Stack
         direction="row"
@@ -80,7 +85,7 @@ export default function SideMenu({ onLogout, user }) {
             {user?.name || 'Guest User'}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {user?.email || 'guest@example.com'}
+            {userEmail}
           </Typography>
         </Box>
         <OptionsMenu onLogout={onLogout} />

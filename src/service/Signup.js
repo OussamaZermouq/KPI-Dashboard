@@ -17,13 +17,13 @@ export default function Signup({ onClose }) {
     const templateParams = {
       name: name,
       email: email,
-      admin_email: "medaminekhaddi@gmail.com", // Administrator's email
+      admin_email: "medaminekhaddi@gmail.com",
     };
 
     try {
-      await emailjs.send(serviceID, templateID, templateParams,userID);
+      await emailjs.send(serviceID, templateID, templateParams, userID);
       alert("Signup information sent to the administrator!");
-      if (onClose) onClose(); // Close the form if a callback is provided
+      if (onClose) onClose();
     } catch (error) {
       console.error("Failed to send email:", error);
       alert("Failed to send signup information. Please try again.");
