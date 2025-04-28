@@ -25,39 +25,10 @@ export default function MainGrid({
   hourProp,
   cellAvailabilityProp,
   sessionContinuityProp,
-  IntraFrequencyHOSRProp,
-  LTE_Session_ContinuityProp,
-  pmCellDowntimeAutoProp,
-  pmCellDowntimeManProp,
-  TrafficVolumeUL_GbytesProp,
-  TrafficVolumeDL_GbytesProp,
-  Active_usersProp,
-  pmActiveUeDlSumProp,
-  _CSFBtoUMTSProp,
-  _CSFBtoGSMProp,
-  UserthroughputDLCAProp,
-  CSFB_SR__Prop,
-  PRB_UL_NewProp,
-  CQIProp,
-  PRB_DL_NewProp,
-  SINR_PuschdBProp,
-  QPSK__Prop,
-  _16QAM__Prop,
-  _64QAM__Prop,
-  _256QAM__Prop,
-  SpectralEfficiencybpshz__Prop,
-  UserthroughputULCAProp,
-  RSSI_dbmProp,
-  RSSI_PUCCHdBmProp,
-  DLRLCBlerRate_Prop,
-  ULRLCBlerRate_Prop,
-  CellThroughputDLMbps_Prop,
-  CellThroughputULMps_Prop,
-  CityProp,
-
-
-})
-{
+  sheetName, // Add sheetName as a prop
+  uploadedFile, // Add uploadedFile as a prop
+}) {
+  const [columnNames, setColumnNames] = useState();
   const [rrcConnectionRate, setRrcConnectionRate] = useState(rrcConnectionRateProp);
   const [userThroughputDL, setUserThroughtputDL] = useState(userDownloadRate);
   const [userThroughputUL, setUserThroughtputUL] = useState(userUploadRate);
@@ -188,86 +159,11 @@ export default function MainGrid({
         </Grid>
       </Grid>
 
-      <Grid
-        container
-        spacing={2}
-        columns={12}
-        sx={{ mb: (theme) => theme.spacing(2) }}
-      >
-        <Grid size={{ xs: 12, md: 6 }}>
-          <ThroughtputLineChart
-            throughtputDataUlProp={userThroughputUL}
-            throughtputDataDlProp={userThroughputDL}
-            hoursDataProp={hours}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          {/* <SessionContinuityBarchart /> */}
-        </Grid>
-      </Grid>
       <Grid container spacing={2} columns={1}>
-
         <Grid size={{ xs: 12, lg: 9 }}>
-        <KpiDataGrid  
-         rrcConnectionRateProp={rrcConnectionRate}
-          userDownloadRate={userThroughputDL}
-          userUploadRate={userThroughputUL}
-          erabSuccessRateProp={erabSuccessRate}
-          uploadtTrafficProp={uploadtTraffic}
-          downloadTrafficProp={downloadTraffic}
-          hoursDataProp={hours}
-          cellAvailabilityProp={cellAvailability}
-          sessionContinuityProp={sessionContinuity}
-          IntraFrequencyHOSRProp={IntraFrequencyHOSR}
-          LTE_Session_ContinuityProb={sessionContinuity}
-          pmCellDowntimeAutoProp={pmCellDowntimeAuto}
-          pmCellDowntimeManProp={pmCellDowntimeMan}
-          TrafficVolumeUL_GbytesProp={TrafficVolumeUL_Gbytes}
-          TrafficVolumeDL_GbytesProp={TrafficVolumeDL_Gbytes}
-          Active_usersProp={Active_users}
-          pmActiveUeDlSumProp={pmActiveUeDlSum}
-          _CSFBtoUMTSProp={_CSFBtoUMTS}
-          _CSFBtoGSMProp={_CSFBtoGSM}
-          UserthroughputDLCAProp={UserthroughputDLCA}
-          CSFB_SR__Prop={CSFB_SR_}
-          PRB_UL_NewProp={PRB_UL_New}
-          CQIProp={CQI}
-          PRB_DL_NewProp={PRB_DL_New}
-          SINR_PuschdBProp={SINR_PuschdB}
-          QPSK__Prop={QPSK_}
-          _16QAM__Prop={_16QAM_}
-          _64QAM__Prop={_64QAM_}
-          _256QAM__Prop={_256QAM_}
-          SpectralEfficiencybpshz__Prop={SpectralEfficiencybpshz_}
-          UserthroughputULCAProp={UserthroughputULCA}
-          RSSI_dbmProp={RSSI_dbm}
-          RSSI_PUCCHdBmProp={RSSI_PUCCHdBm}
-          DLRLCBlerRate_Prop={DLRLCBlerRate}
-          ULRLCBlerRate_Prop={ULRLCBlerRate}
-          CellThroughputDLMbps_Prop={CellThroughputDLMbps}
-          CellThroughputULMps_Prop={CellThroughputULMps}
-          CityProp={city}
-
-        />
+          <ContentTable sheetName={sheetName} file={uploadedFile} />
         </Grid>
       </Grid>
-
-      {/*      
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Details
-      </Typography>
-      
-      <Grid container spacing={2} columns={12}>
-        <Grid size={{ xs: 12, lg: 9 }}>
-          <CustomizedDataGrid />
-        </Grid>
-        <Grid size={{ xs: 12, lg: 3 }}>
-          <Stack gap={2} direction={{ xs: 'column', sm: 'row', lg: 'column' }}>
-            <CustomizedTreeView />
-            <ChartUserByCountry />
-          </Stack>
-        </Grid> 
-      </Grid> */}
       <Copyright sx={{ my: 4 }} />
     </Box>
   );

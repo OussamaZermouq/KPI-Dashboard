@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { alpha } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -9,9 +9,15 @@ import Header from "./components/Header";
 import MainGrid from "./components/MainGrid";
 import SideMenu from "./components/SideMenu";
 import AppTheme from "../shared-theme/AppTheme";
-import { getKPI } from "../../service/kpiService";
-import { Paper, Typography, Button, useMediaQuery } from "@mui/material";
-
+import { getKPI, getSheetNames } from "../../service/kpiService";
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  Paper,
+  Typography,
+  Button,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
@@ -25,7 +31,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import KpiDataGrid from "./components/KpiDataGrid";
+import CustomDialogSheetName from "./components/custom/CustomDialogSheetName";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -35,7 +41,9 @@ const xThemeComponents = {
 };
 export default function Dashboard({ onLogout, ...props }) {
   const [value, setValue] = React.useState("1");
+  const [file, setFile] = useState();
   const [fileUploaded, setFileUploaded] = useState(false);
+  const [sheetsNames, setSheetNames] = useState([]);
   const [loading, setLoading] = useState(false);
   const [rpcConnectionRateArray, setRpcConnectionRateArray] = useState([]);
   const [userThroughputDL, setUserThroughputDL] = useState([]);
@@ -46,80 +54,62 @@ export default function Dashboard({ onLogout, ...props }) {
   const [hours, setHours] = useState([]);
   const [cellAvailability, setCellAvailability] = useState([]);
   const [sessionContinuityData, setSeesionContinuityData] = useState([]);
-  const [intraFrequencyHOSR, setIntraFrequencyHOSR] = useState([]);
-  const [lteSessionContinuity, setLteSessionContinuity] = useState([]);
-  const [pmCellDowntimeAuto, setPmCellDowntimeAuto] = useState([]);
-  const [pmCellDowntimeMan, setPmCellDowntimeMan] = useState([]);
-  const [trafficVolumeULGbytes, setTrafficVolumeULGbytes] = useState([]);
-  const [trafficVolumeDLGbytes, setTrafficVolumeDLGbytes] = useState([]);
-  const [activeUsers, setActiveUsers] = useState([]);
-  const [pmActiveUeDlSum, setPmActiveUeDlSum] = useState([]);
-  const [csfbToUMTS, setCsfbToUMTS] = useState([]);
-  const [csfbToGSM, setCsfbToGSM] = useState([]);
-  const [userThroughputDLCA, setUserThroughputDLCA] = useState([]);
-  const [csfbSR, setCsfbSR] = useState([]);
-  const [prbULNew, setPrbULNew] = useState([]);
-  const [cqi, setCqi] = useState([]);
-  const [prbDLNew, setPrbDLNew] = useState([]);
-  const [sinrPuschdB, setSinrPuschdB] = useState([]);
-  const [qpsk, setQpsk] = useState([]);
-  const [qam16, setQam16] = useState([]);
-  const [qam64, setQam64] = useState([]);
-  const [qam256, setQam256] = useState([]);
-  const [spectralEfficiency, setSpectralEfficiency] = useState([]);
-  const [userThroughputULCA, setUserThroughputULCA] = useState([]);
-  const [rssiDbm, setRssiDbm] = useState([]);
-  const [rssiPUCCHDbm, setRssiPUCCHDbm] = useState([]);
-  const [dlRLCBlerRate, setDlRLCBlerRate] = useState([]);
-  const [ulRLCBlerRate, setUlRLCBlerRate] = useState([]);
-  const [city, setCity] = useState([]);
-
-
-
-  const [processedKpiData, setProcessedKpiData] = useState([]);
-
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [selectedSheetName, setSelectedSheetName] = useState(null);
+  const [showSheetDialog, setShowSheetDialog] = useState(true);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  //1 handle upload
   const handleUploadFile = async (file) => {
-    setLoading(true);
-    setUploadedFile(file);
-    try {
-      const kpiData = await getKPI("Hourly Ville", file);
+    setFile(file);
+    const sheetsNamesData = await getSheetNames(file);
+    if (sheetsNamesData || sheetsNamesData["data"]) {
+      setSheetNames(sheetsNamesData);
+    }
 
+    setFileUploaded(true);
+  };
+  //2 handle sheetname selection
+
+  const handleSheetNameSelected = async (sheetName) => {
+    console.log(selectedSheetName);
+    console.log(fileUploaded);
+    setLoading(true);
+    setFile(file);
+    try {
+      const kpiData = await getKPI(sheetName, file);
       if (!kpiData || !kpiData["data"]) {
         console.error("Invalid KPI data received:", kpiData);
         return;
       }
-
       let hourData = Object.values(kpiData["data"]).map((kpi) => kpi["Hour"]);
-      let rrcConnectionRate = Object.values(kpiData["data"]).map((kpi) => kpi["1_RRC Connection Success Rate"]);
-      let userDownloadRate = Object.values(kpiData["data"]).map((kpi) => kpi["6_User throughput DL"]);
-      let userUploadRate = Object.values(kpiData["data"]).map((kpi) => kpi["7_User throughtput UL"]);
-      let erabSuccessRate = Object.values(kpiData["data"]).map((kpi) => kpi["2_ERAB Setup Success Rate"]);
-      let trafficVolumeUL = Object.values(kpiData["data"]).map((kpi) => kpi["Traffic Volume UL (Gbytes)"]);
-      let trafficVolumeDL = Object.values(kpiData["data"]).map((kpi) => kpi["Traffic Volume DL (Gbytes)"]);
-      let cellAvailability = Object.values(kpiData["data"]).map((kpi) => kpi["10_Cell Availability"]);
-      let sessionContinuity = Object.values(kpiData["data"]).map((kpi) => kpi["9_LTE Session Continuity"]);
-      let intraFrequencyHOSR = Object.values(kpiData["data"]).map((kpi) => kpi["Intra Frequency HOSR"]);
-      let lteSessionContinuity = Object.values(kpiData["data"]).map((kpi) => kpi["LTE Session Continuity"]);
-      let pmCellDowntimeAuto = Object.values(kpiData["data"]).map((kpi) => kpi["PM Cell Downtime Auto"]);
-      let pmCellDowntimeMan = Object.values(kpiData["data"]).map((kpi) => kpi["PM Cell Downtime Manual"]);
-      let trafficVolumeULGbytes = Object.values(kpiData["data"]).map((kpi) => kpi["Traffic Volume UL (Gbytes)"]);
-      let trafficVolumeDLGbytes = Object.values(kpiData["data"]).map((kpi) => kpi["Traffic Volume DL (Gbytes)"]);
-      let city = Object.values(kpiData["data"]).map((kpi) => kpi["city"]);
+      let rrcConnectionRate = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["1_RRC Connection Success Rate"]
+      );
 
-
-
-
-
-
-
-
-      // Set individual KPI arrays
+      let userDownloadRate = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["6_User throughput DL"]
+      );
+      let userUploadRate = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["7_User throughtput UL"]
+      );
+      let erabSuccessRate = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["2_ERAB Setup Success Rate"]
+      );
+      let trafficVolumeUL = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["Traffic Volume UL (Gbytes)"]
+      );
+      let trafficVolumeDL = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["Traffic Volume DL (Gbytes)"]
+      );
+      let cellAvailability = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["10_Cell Availability"]
+      );
+      let sessionContinuity = Object.values(kpiData["data"]).map(
+        (kpi) => kpi["9_LTE Session Continuity"]
+      );
       setRpcConnectionRateArray(rrcConnectionRate);
       setUserThroughputDL(userDownloadRate);
       setUserThroughputUL(userUploadRate);
@@ -129,11 +119,6 @@ export default function Dashboard({ onLogout, ...props }) {
       setHours(hourData);
       setCellAvailability(cellAvailability);
       setSeesionContinuityData(sessionContinuity);
-      setIntraFrequencyHOSR(intraFrequencyHOSR);
-      setCity(city);
-
-
-      setFileUploaded(true);
     } catch (error) {
       console.error("Error fetching KPI data:", error);
     } finally {
@@ -141,16 +126,102 @@ export default function Dashboard({ onLogout, ...props }) {
     }
   };
 
+  const UploadFileComponent = () => {
+    return (
+      <>
+        <VisuallyHiddenInput type="file" onChange={handleUploadFile} />
+        <Card
+          sx={{
+            width: "50%",
+            height: "80%",
+          }}
+          onClick={(e) => {
+            <VisuallyHiddenInput />;
+          }}
+        >
+          <CardActionArea
+            sx={{
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <CardContent
+              sx={{
+                height: "100%",
+                width: "100%",
+              }}
+            >
+              <Paper
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  console.log("ON DRAG OVER");
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  console.log("ON DROP");
+                }}
+                sx={{
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                <Box
+                  sx={{
+                    height: "100%",
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 4,
+                    p: 5,
+                    border: "12px dashed lightgrey",
+                    borderRadius: 10,
+                  }}
+                >
+                   <CloudUploadIcon
+                    style={{
+                      fontSize: "100px",
+                      color: "lightgray",
+                    }}
+                  />
+                  <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                  >
+                    <VisuallyHiddenInput
+                      type="file"
+                      onChange={(event) =>
+                        handleUploadFile(event.target.files[0])
+                      }
+                    />
+
+                    <Typography variant="h6">
+                      Click or drag file to upload
+                    </Typography>
+                  </Button>
+
+                 
+                </Box>
+              </Paper>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </>
+    );
+  };
+
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
     height: 1,
+    width: 1,
     overflow: "hidden",
     position: "absolute",
     bottom: 0,
     left: 0,
     whiteSpace: "nowrap",
-    width: 1,
   });
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
@@ -178,95 +249,56 @@ export default function Dashboard({ onLogout, ...props }) {
             }}
           >
             <Header />
-            {fileUploaded ? (
-              <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <TabList
-                    onChange={handleChange}
-                    aria-label="lab API tabs example"
-                  >
-                    <Tab label="4G" value="1" />
-                    <Tab label="3G" value="2" />
-                    <Tab label="2G" value="3" />
-                  </TabList>
-                </Box>
-                <TabPanel value="1">
-                  <MainGrid
-                    rrcConnectionRateProp={rpcConnectionRateArray}
-                    userDownloadRate={userThroughputDL}
-                    userUploadRate={userThroughputUL}
-                    erabSuccessRateProp={erabSuccessRate}
-                    uploadtTrafficProp={trafficVolumeUL}
-                    downloadTrafficProp={trafficVolumeDL}
-                    hourProp={hours}
-                    cellAvailabilityProp={cellAvailability}
-                    sessionContinuityProp={sessionContinuityData}
-                    IntraFrequencyHOSRProp={intraFrequencyHOSR}
-                    LTE_Session_ContinuityProb={lteSessionContinuity}
-                    pmCellDowntimeAutoProp={pmCellDowntimeAuto}
-                    pmCellDowntimeManProp={pmCellDowntimeMan}
-                    TrafficVolumeUL_GbytesProp={trafficVolumeULGbytes}
-                    TrafficVolumeDL_GbytesProp={trafficVolumeDLGbytes}  
-                    city={city}
-                  />
-                </TabPanel>
-                <TabPanel value="2">
-                  <Typography>No Data found</Typography>
-                </TabPanel>
-                <TabPanel value="3">
-                  <Typography>No Data found</Typography>
-                </TabPanel>
-              </TabContext>
-            ) : (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  minHeight: "80vh",
-                  "& > :not(style)": {
-                    m: 2,
-                    width: {
-                      xs: "90%", 
-                      sm: "70%",
-                      md: "50%", 
-                      lg: "40%",
-                    },
-                    height: "auto",
-                  },
-                }}
-              >
-                <Paper
-                  elevation={3}
-                  sx={{
-                    
-                    p: 4,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "column",
-                    textAlign: "center",
-                  }}
-                >
-                  <Button
-                    component="label"
-                    role={undefined}
-                    variant="contained"
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                  >
-                    Upload a file to analyze
-                    <VisuallyHiddenInput
-                      type="file"
-                      onChange={(event) =>
-                        handleUploadFile(event.target.files[0])
-                      }
+
+            {fileUploaded && showSheetDialog && (
+              <CustomDialogSheetName
+                dialogDataProp={sheetsNames}
+                selectedSheetName={setSelectedSheetName}
+                handleSelectSheetnameChange={handleSheetNameSelected}
+                onDialogClose={() => setShowSheetDialog(false)}
+              />
+            )}
+            {fileUploaded &&
+              selectedSheetName &&
+              !showSheetDialog &&
+              !loading && (
+                <TabContext value={value}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <TabList
+                      onChange={handleChange}
+                      aria-label="lab API tabs example"
+                    >
+                      <Tab label="4G" value="1" />
+                      <Tab label="3G" value="2" />
+                      <Tab label="2G" value="3" />
+                    </TabList>
+                  </Box>
+                  <TabPanel value="1">
+                    <MainGrid
+                      rrcConnectionRateProp={rpcConnectionRateArray}
+                      userDownloadRate={userThroughputDL}
+                      userUploadRate={userThroughputUL}
+                      erabSuccessRateProp={erabSuccessRate}
+                      uploadtTrafficProp={trafficVolumeUL}
+                      downloadTrafficProp={trafficVolumeDL}
+                      hourProp={hours}
+                      cellAvailabilityProp={cellAvailability}
+                      sessionContinuityProp={sessionContinuityData}
+                      hoursDataProp={hours}
                     />
-                  </Button>
-                </Paper>
-              </Box>
+                  </TabPanel>
+                  <TabPanel value="2">
+                    <Typography>No Data found</Typography>
+                  </TabPanel>
+                  <TabPanel value="3">
+                    <Typography>No Data found</Typography>
+                  </TabPanel>
+                </TabContext>
+              )}
+
+            {!fileUploaded && (
+                <UploadFileComponent />
+                
             )}
           </Stack>
         </Box>
