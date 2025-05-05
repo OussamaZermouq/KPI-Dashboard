@@ -13,7 +13,6 @@ const MenuItem = styled(MuiMenuItem)({
 });
 
 export default function OptionsMenu({ onLogout }) {
-  console.log("onLogout prop in OptionsMenu:", onLogout); // Debugging log
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -27,8 +26,8 @@ export default function OptionsMenu({ onLogout }) {
   };
 
   const handleLogout = () => {
-    console.log("Logout clicked"); // Debugging log
-    onLogout(); // Trigger the logout function
+    localStorage.removeItem("jwt-token")
+    window.location.href = "/login"
   };
 
   return (

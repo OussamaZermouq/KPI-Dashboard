@@ -17,11 +17,9 @@ export default function MenuContent({ userRole }) {
   const [isAdmin, setIsAdmin] = React.useState(userRole === "ADMIN");
 
   const mainListItems = [
-    { text: "Dashboard", icon: <AnalyticsRoundedIcon /> },
-    { text: "Clients", icon: <PeopleRoundedIcon /> },
-    { text: "Tasks", icon: <AssignmentRoundedIcon /> },
-    ...isAdmin?[{
-         text: "Utilisateurs", icon: <PeopleRoundedIcon /> ,
+    { text: "Dashboard", icon: <AnalyticsRoundedIcon />, slug:"/dashboard" },
+    ...userRole === "ADMIN"?[{
+         text: "Utilisateurs", icon: <PeopleRoundedIcon /> ,slug:"/users"
     }]:[]
   ];
 
@@ -31,12 +29,16 @@ export default function MenuContent({ userRole }) {
     { text: "Feedback", icon: <HelpRoundedIcon /> },
   ];
 
+  const handleNavigationClick = (link) =>{
+    window.location.href = link;
+  }
+
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>
       <List dense>
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: "block" }}>
-            <ListItemButton selected={index === 0}>
+            <ListItemButton selected={index === 0} onClick={() => handleNavigationClick(item.slug)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>

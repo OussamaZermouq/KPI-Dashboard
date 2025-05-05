@@ -36,7 +36,7 @@ export default function SideMenu({ onLogout, user }) {
   })
   const handleLogout = () => {
     console.log('User logged out');
-    localStorage.removeItem('jwt-token'); // Clear the JWT token from local storage
+    localStorage.removeItem('jwt-token');
     onLogout();
   };
 
@@ -88,7 +88,7 @@ export default function SideMenu({ onLogout, user }) {
             {userEmail}
           </Typography>
         </Box>
-        <OptionsMenu onLogout={onLogout} />
+        <OptionsMenu />
       </Stack>
     </Drawer>
   );

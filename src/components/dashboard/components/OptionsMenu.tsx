@@ -18,8 +18,8 @@ export default function OptionsMenu({ onLogout }) {
   };
 
   const handleLogout = () => {
-    console.log("Logout clicked"); // Debugging log
-    onLogout(); // Trigger the logout function
+    localStorage.removeItem("jwt-token")
+    
   };
   return (
     <div>

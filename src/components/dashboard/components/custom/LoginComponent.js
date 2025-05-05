@@ -65,16 +65,17 @@ export default function LoginComponent() {
   const handleLoginClick = async (email, password) => {
     const result = await LoginService(email, password);
     if (result) {
-      alert("good login");
-    } else {
+      window.location.href = "/dashboard"
+    }
+    else if (result === 401){
+      setError("You account is not yet enabled.");
+
+    } 
+    else {
       setError("There is an issue with the login");
     }
   };
 
-  const handleSignUpClick = ()=>{
-    
-    return;
-  }
   return (
     <CssVarsProvider theme={customTheme} disableTransitionOnChange>
       <CssBaseline />

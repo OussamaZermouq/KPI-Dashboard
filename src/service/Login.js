@@ -24,7 +24,7 @@ const LoginService = async (email, password) => {
       return true;
     }
 
-    return false;
+    return response.status;
   } catch (err) {
     console.log(err);
     return false;
