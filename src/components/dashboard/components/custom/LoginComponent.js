@@ -62,9 +62,11 @@ const customTheme = extendTheme({ defaultColorScheme: "dark", colorSchemes: colo
 
 export default function LoginComponent() {
   const [error, setError] = React.useState();
+  const [loading, setLoading] = React.useState(false);
   const handleLoginClick = async (email, password) => {
+    setLoading(true);
     const result = await LoginService(email, password);
-    if (result) {
+    if (result === 200) {
       window.location.href = "/dashboard"
     }
     else if (result === 401){
@@ -72,8 +74,9 @@ export default function LoginComponent() {
 
     } 
     else {
-      setError("There is an issue with the login");
+      setError("Your credentials seem to be wrong, please try again");
     }
+    setLoading(false);
   };
 
   return (
@@ -193,7 +196,7 @@ export default function LoginComponent() {
                       Forgot your password?
                     </Link>
                   </Box>
-                  <Button type="submit" fullWidth>
+                  <Button type="submit" fullWidth loading={loading}>
                     Sign in
                   </Button>
                   {error && <Typography fontSize={"lg"} color="danger"> {error}</Typography>}

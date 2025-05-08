@@ -11,13 +11,7 @@ import {
 import SingupComponent from "./components/dashboard/components/custom/SignupComponent";
 import TestComponent from "./components/dashboard/components/custom/test";
 import UsersPage from "./components/users/Users";
-import {
-  createTheme,
-  ThemeProvider,
-  THEME_ID as MATERIAL_THEME_ID,
-} from '@mui/material/styles';
-import { CssVarsProvider as JoyCssVarsProvider } from '@mui/joy/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 

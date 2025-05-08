@@ -8,8 +8,24 @@ import AppNavbar from "../dashboard/components/AppNavbar";
 import Header from "../dashboard/components/Header";
 import { alpha } from "@mui/material/styles";
 import UserListComponent from "../dashboard/components/custom/UserListComponent";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Snackbar } from "@mui/material";
+
+
 
 export default function UsersPage() {
+  const [snackBarProps, setSnackBarProps] = React.useState({
+    open: false,
+    severity:"",
+    message: "",
+  });
+
+  const handleClose = () => {
+    setSnackBarProps({
+      ...snackBarProps,
+      open: false,
+    });
+  };
+
   return (
     <AppTheme>
       <CssBaseline enableColorScheme />
@@ -36,7 +52,22 @@ export default function UsersPage() {
             }}
           >
             <Header />
-            <UserListComponent />
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={snackBarProps.open}
+              autoHideDuration={6000}
+              onClose={handleClose}
+            >
+              <Alert
+                onClose={handleClose}
+                severity={snackBarProps.severity}
+                variant="filled"
+                sx={{ width: "100%" }}
+              >
+                {snackBarProps.message}
+              </Alert>
+            </Snackbar>
+            <UserListComponent setSnackBarProps={setSnackBarProps} />
           </Stack>
         </Box>
       </Box>

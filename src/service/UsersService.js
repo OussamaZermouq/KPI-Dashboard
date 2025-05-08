@@ -20,3 +20,24 @@ export async function getAllUsers() {
     console.error(e);
   }
 }
+
+export async function updateUserStatus(email){
+  let config = {
+    method: "put",
+    url: BASE_URL+"/update/status",
+    headers: {
+      Authorization: `${TOKEN}`,
+      Accept:'*/*'
+    },
+    data:{
+      email : email,
+    },
+  };
+  try{
+    const response = await axios.request(config);
+    return response.status;
+  }
+  catch(e){
+    console.error(e)
+  }
+}

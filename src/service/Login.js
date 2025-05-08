@@ -21,13 +21,11 @@ const LoginService = async (email, password) => {
     
     if (response.status === 200) {
       localStorage.setItem("jwt-token", "Bearer " + response.data["token"]);
-      return true;
     }
 
     return response.status;
   } catch (err) {
     console.log(err);
-    return false;
   }
 };
 export default LoginService;

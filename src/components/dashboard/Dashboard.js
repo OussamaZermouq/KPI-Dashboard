@@ -133,7 +133,7 @@ export default function Dashboard({ onLogout, ...props }) {
         <Card
           sx={{
             width: "50%",
-            height: "80%",
+            height: "700px",
           }}
           onClick={(e) => {
             <VisuallyHiddenInput />;
