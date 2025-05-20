@@ -224,8 +224,7 @@ export default function Dashboard({ onLogout, ...props }) {
     whiteSpace: "nowrap",
   });
   return (
-    <AppTheme {...props} themeComponents={xThemeComponents}>
-      <CssBaseline enableColorScheme />
+
       <Box sx={{ display: "flex" }}>
         <SideMenu onLogout={onLogout} />
         <AppNavbar />
@@ -303,6 +302,5 @@ export default function Dashboard({ onLogout, ...props }) {
           </Stack>
         </Box>
       </Box>
-    </AppTheme>
   );
 }

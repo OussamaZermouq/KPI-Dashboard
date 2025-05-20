@@ -12,15 +12,30 @@ import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function MenuContent({ userRole }) {
   const [isAdmin, setIsAdmin] = React.useState(userRole === "ADMIN");
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
 
+  const handleListItemClick = (event, index, link) => {
+    setSelectedIndex(index);
+    navigate(link);
+  };
   const mainListItems = [
-    { text: "Dashboard", icon: <AnalyticsRoundedIcon />, slug:"/dashboard" },
-    ...userRole === "ADMIN"?[{
-         text: "Utilisateurs", icon: <PeopleRoundedIcon /> ,slug:"/users"
-    }]:[]
+    { text: "Dashboard", icon: <AnalyticsRoundedIcon />, slug: "/dashboard" },
+    ...(userRole === "ADMIN"
+      ? [
+          {
+            text: "Utilisateurs",
+            icon: <PeopleRoundedIcon />,
+            slug: "/users",
+          },
+        ]
+      : []),
   ];
 
   const secondaryListItems = [
@@ -29,22 +44,20 @@ export default function MenuContent({ userRole }) {
     { text: "Feedback", icon: <HelpRoundedIcon /> },
   ];
 
-  const handleNavigationClick = (link) =>{
-    window.location.href = link;
-  }
-
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>
       <List dense>
-        {mainListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ display: "block" }}>
-            <ListItemButton selected={index === 0} onClick={() => handleNavigationClick(item.slug)}>
+        {mainListItems.map((item) => (
+          <ListItem key={item.slug} disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              selected={currentPath === item.slug}
+              onClick={() => navigate(item.slug)}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
-        
       </List>
       <List dense>
         {secondaryListItems.map((item, index) => (

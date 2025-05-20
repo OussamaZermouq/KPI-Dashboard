@@ -8,19 +8,31 @@ import MenuItem from '@mui/material/MenuItem';
 import { useColorScheme } from '@mui/material/styles';
 
 export default function ColorModeIconDropdown(props) {
-  const { mode, systemMode, setMode } = useColorScheme();
+  const { mode, setMode } = useColorScheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const handleMode = (targetMode) => () => {
     setMode(targetMode);
+    localStorage.setItem('theme-mode', targetMode);
     handleClose();
   };
+
+  React.useEffect(() => {
+    const savedMode = localStorage.getItem('theme-mode');
+    if (savedMode) {
+      setMode(savedMode);
+    }
+  }, [setMode]);
+
   if (!mode) {
     return (
       <Box
@@ -37,11 +49,13 @@ export default function ColorModeIconDropdown(props) {
       />
     );
   }
-  const resolvedMode = systemMode || mode;
+
   const icon = {
     light: <LightModeIcon />,
     dark: <DarkModeIcon />,
-  }[resolvedMode];
+    system: <LightModeIcon />,
+  }[mode];
+
   return (
     <React.Fragment>
       <IconButton
@@ -58,7 +72,7 @@ export default function ColorModeIconDropdown(props) {
       </IconButton>
       <Menu
         anchorEl={anchorEl}
-        id="account-menu"
+        id="color-scheme-menu"
         open={open}
         onClose={handleClose}
         onClick={handleClose}

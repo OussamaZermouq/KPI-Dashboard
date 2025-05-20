@@ -11,9 +11,17 @@ import {
 import SingupComponent from "./components/dashboard/components/custom/SignupComponent";
 import TestComponent from "./components/dashboard/components/custom/test";
 import UsersPage from "./components/users/Users";
-
+import { CssVarsProvider as JoyCssVarsProvider } from "@mui/joy/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import {
+  createTheme,
+  ThemeProvider,
+  CssVarsProvider,
+  THEME_ID as MATERIAL_THEME_ID,
+} from "@mui/material/styles";
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [mode, setMode] = useState("light");
 
   useEffect(() => {
     const token = localStorage.getItem("jwt-token");
@@ -26,32 +34,43 @@ function App() {
     const isAuthenticated = !!localStorage.getItem("jwt-token");
     return isAuthenticated ? children : <Navigate to="/login" replace />;
   };
+
+  const theme = createTheme({
+    colorSchemes: {
+      dark: true,
+    },
+  });
+
   return (
-    
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/login" element={<LoginComponent />} />
-        <Route path="/signup" element={<SingupComponent />} />
-        <Route path="/test" element={<TestComponent />} />
-        <Route
-          path="/users"
-          element={
-            <ProtectedRoute>
-              <UsersPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
+      <ThemeProvider theme={{ [MATERIAL_THEME_ID]: theme }}>
+        <JoyCssVarsProvider>
+          <CssBaseline enableColorScheme />
+          <Router>
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/login" element={<LoginComponent />} />
+              <Route path="/signup" element={<SingupComponent />} />
+              <Route path="/test" element={<TestComponent />} />
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRoute>
+                    <UsersPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </Router>
+        </JoyCssVarsProvider>
+      </ThemeProvider>
   );
 }
 

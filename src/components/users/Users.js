@@ -8,8 +8,7 @@ import AppNavbar from "../dashboard/components/AppNavbar";
 import Header from "../dashboard/components/Header";
 import { alpha } from "@mui/material/styles";
 import UserListComponent from "../dashboard/components/custom/UserListComponent";
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Snackbar } from "@mui/material";
-
+import { Alert, Snackbar } from "@mui/material";
 
 
 export default function UsersPage() {
@@ -27,8 +26,6 @@ export default function UsersPage() {
   };
 
   return (
-    <AppTheme>
-      <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
         <SideMenu />
         <AppNavbar />
@@ -71,6 +68,5 @@ export default function UsersPage() {
           </Stack>
         </Box>
       </Box>
-    </AppTheme>
   );
 }

@@ -1,6 +1,3 @@
-import React, { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
-import emailjs from "emailjs-com";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
@@ -18,9 +15,16 @@ const LoginService = async (email, password) => {
         },
       }
     );
-    
+
     if (response.status === 200) {
-      localStorage.setItem("jwt-token", "Bearer " + response.data["token"]);
+      localStorage.setItem(
+        "jwt-token",
+        "Bearer " + response.data["access_token"]
+      );
+      localStorage.setItem(
+        "refresh-token",
+        "Bearer " + response.data["refresh_token"]
+      );
     }
 
     return response.status;
@@ -31,8 +35,65 @@ const LoginService = async (email, password) => {
 export default LoginService;
 
 
-export function decodedJwtToken(){
-  let jwtToken = localStorage.getItem('jwt-token');
+
+/**
+ * Refresh token function - gets a new access token using the refresh token
+ * @returns {Promise<boolean>} True if refresh was successful, false otherwise
+ */
+
+export async function refreshToken() {
+  
+  const REFRESH_TOKEN = localStorage.getItem("refresh-token");
+  
+  if (!REFRESH_TOKEN) {
+    return false;
+  }
+  
+  let config = {
+    method: "post",
+    url: BASE_URL + "/refresh",
+    headers: {
+      Accept: "*/*",
+    },
+    data:{
+      "refresh-token": REFRESH_TOKEN,
+    }
+  };
+
+  try {
+    const response = await axios.request(config);
+    if (response.status === 200) {
+      
+      localStorage.setItem(
+        "jwt-token",
+        "Bearer " + response.data["access_token"]
+      );
+      
+      localStorage.setItem(
+        "refresh-token", 
+        "Bearer " + response.data["refresh_token"]
+      );
+      return true;
+
+    } else {
+      localStorage.removeItem("jwt-token");
+      localStorage.removeItem("refresh-token");
+    
+      return false;
+    }
+  } catch (e) {
+    
+    console.error("Token refresh failed:", e);
+    
+    localStorage.removeItem("jwt-token");
+    localStorage.removeItem("refresh-token");
+    
+    return false;
+  }
+}
+
+export function decodedJwtToken() {
+  let jwtToken = localStorage.getItem("jwt-token");
   let decodedToken = jwtDecode(jwtToken);
   return decodedToken;
 }
