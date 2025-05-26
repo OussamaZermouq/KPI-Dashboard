@@ -1,15 +1,13 @@
 import * as React from "react";
 import { useEffect, useState, useRef } from "react";
 import { alpha } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import AppNavbar from "./components/AppNavbar";
 import Header from "./components/Header";
 import MainGrid from "./components/MainGrid";
 import SideMenu from "./components/SideMenu";
-import AppTheme from "../shared-theme/AppTheme";
-import { getKPI, getSheetNames } from "../../service/kpiService";
+import { getKPI, getFileInfo } from "../../service/kpiService";
 import {
   Card,
   CardActionArea,
@@ -20,28 +18,15 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import {
-  chartsCustomizations,
-  dataGridCustomizations,
-  datePickersCustomizations,
-  treeViewCustomizations,
-} from "./theme/customizations";
-
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import CustomDialogSheetName from "./components/custom/CustomDialogSheetName";
+import SheetNameAndCitySelectionDialog from "./components/custom/SheetNameAndCitySelectionDialog";
+import { CityContext } from "../../App";
 
-const xThemeComponents = {
-  ...chartsCustomizations,
-  ...dataGridCustomizations,
-  ...datePickersCustomizations,
-  ...treeViewCustomizations,
-};
 export default function Dashboard({ onLogout, ...props }) {
   const [value, setValue] = React.useState("1");
-  const [file, setFile] = useState();
   const [fileUploaded, setFileUploaded] = useState(false);
   const [sheetsNames, setSheetNames] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -56,7 +41,9 @@ export default function Dashboard({ onLogout, ...props }) {
   const [sessionContinuityData, setSeesionContinuityData] = useState([]);
   const [selectedSheetName, setSelectedSheetName] = useState(null);
   const [showSheetDialog, setShowSheetDialog] = useState(true);
-
+  const [file, setFile] = useState();
+  const [userSelectedCity, setUserSelectedCity] = useState();
+  const [citiesState, setCitiesState] = useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -64,18 +51,19 @@ export default function Dashboard({ onLogout, ...props }) {
   //1 handle upload
   const handleUploadFile = async (file) => {
     setFile(file);
-    const sheetsNamesData = await getSheetNames(file);
-    if (sheetsNamesData || sheetsNamesData["data"]) {
-      setSheetNames(sheetsNamesData);
+    const data = await getFileInfo(file);
+    if (data && data["sheets"] && data["cities"]) {
+      setSheetNames(data["sheets"]);
+      setCitiesState(data["cities"]);
+      setFileUploaded(true);
+    } else {
+      console.log("Invalid data received:", data);
     }
-
-    setFileUploaded(true);
   };
+
   //2 handle sheetname selection
 
   const handleSheetNameSelected = async (sheetName) => {
-    console.log(selectedSheetName);
-    console.log(fileUploaded);
     setLoading(true);
     setFile(file);
     try {
@@ -129,14 +117,10 @@ export default function Dashboard({ onLogout, ...props }) {
   const UploadFileComponent = () => {
     return (
       <>
-        <VisuallyHiddenInput type="file" onChange={handleUploadFile} />
         <Card
           sx={{
-            width: "50%",
+            width: { lg: "60%", md: "70%", xs: "90%" },
             height: "700px",
-          }}
-          onClick={(e) => {
-            <VisuallyHiddenInput />;
           }}
         >
           <CardActionArea
@@ -151,6 +135,8 @@ export default function Dashboard({ onLogout, ...props }) {
                 width: "100%",
               }}
             >
+              <VisuallyHiddenInput type="file" onChange={handleUploadFile} />
+
               <Paper
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -169,26 +155,26 @@ export default function Dashboard({ onLogout, ...props }) {
                   sx={{
                     height: "100%",
                     width: "100%",
-                    display: "flex",
+                    display: {
+                      md: "flex",
+                      xs: "flex flex-grid flex-items-center",
+                    },
                     alignItems: "center",
                     justifyContent: "center",
+                    justifyItems: "center",
                     gap: 4,
                     p: 5,
-                    border: "12px dashed lightgrey",
+                    border: "12px dashed darkgrey",
                     borderRadius: 10,
                   }}
                 >
-                   <CloudUploadIcon
-                    style={{
-                      fontSize: "100px",
-                      color: "lightgray",
-                    }}
-                  />
                   <Button
                     component="label"
                     role={undefined}
                     variant="contained"
                     tabIndex={-1}
+                    style={{ textTransform: "none" }}
+                    startIcon={<CloudUploadIcon />}
                   >
                     <VisuallyHiddenInput
                       type="file"
@@ -197,12 +183,8 @@ export default function Dashboard({ onLogout, ...props }) {
                       }
                     />
 
-                    <Typography variant="h6">
-                      Click or drag file to upload
-                    </Typography>
+                    <Typography variant="h6">Upload a file</Typography>
                   </Button>
-
-                 
                 </Box>
               </Paper>
             </CardContent>
@@ -223,84 +205,80 @@ export default function Dashboard({ onLogout, ...props }) {
     left: 0,
     whiteSpace: "nowrap",
   });
+
   return (
-
-      <Box sx={{ display: "flex" }}>
-        <SideMenu onLogout={onLogout} />
-        <AppNavbar />
-        <Box
-          component="main"
-          sx={(theme) => ({
-            flexGrow: 1,
-            backgroundColor: theme.vars
-              ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-              : alpha(theme.palette.background.default, 1),
-            overflow: "auto",
-          })}
+    <Box sx={{ display: "flex" }}>
+      <SideMenu onLogout={onLogout} />
+      <AppNavbar />
+      <Box
+        component="main"
+        sx={(theme) => ({
+          flexGrow: 1,
+          backgroundColor: theme.vars
+            ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+            : alpha(theme.palette.background.default, 1),
+          overflow: "auto",
+        })}
+      >
+        <Stack
+          spacing={2}
+          sx={{
+            alignItems: "center",
+            mx: 3,
+            pb: 5,
+            mt: { xs: 8, md: 0 },
+          }}
         >
-          <Stack
-            spacing={2}
-            sx={{
-              alignItems: "center",
-              mx: 3,
-              pb: 5,
-              mt: { xs: 8, md: 0 },
-            }}
-          >
-            <Header />
+          <Header />
 
-            {fileUploaded && showSheetDialog && (
-              <CustomDialogSheetName
-                dialogDataProp={sheetsNames}
-                selectedSheetName={setSelectedSheetName}
-                handleSelectSheetnameChange={handleSheetNameSelected}
-                onDialogClose={() => setShowSheetDialog(false)}
-              />
-            )}
-            {fileUploaded &&
-              selectedSheetName &&
-              !showSheetDialog &&
-              !loading && (
-                <TabContext value={value}>
-                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                    <TabList
-                      onChange={handleChange}
-                      aria-label="lab API tabs example"
-                    >
-                      <Tab label="4G" value="1" />
-                      <Tab label="3G" value="2" />
-                      <Tab label="2G" value="3" />
-                    </TabList>
-                  </Box>
-                  <TabPanel value="1">
-                    <MainGrid
-                      rrcConnectionRateProp={rpcConnectionRateArray}
-                      userDownloadRate={userThroughputDL}
-                      userUploadRate={userThroughputUL}
-                      erabSuccessRateProp={erabSuccessRate}
-                      uploadtTrafficProp={trafficVolumeUL}
-                      downloadTrafficProp={trafficVolumeDL}
-                      hourProp={hours}
-                      cellAvailabilityProp={cellAvailability}
-                      sessionContinuityProp={sessionContinuityData}
-                      hoursDataProp={hours}
-                    />
-                  </TabPanel>
-                  <TabPanel value="2">
-                    <Typography>No Data found</Typography>
-                  </TabPanel>
-                  <TabPanel value="3">
-                    <Typography>No Data found</Typography>
-                  </TabPanel>
-                </TabContext>
-              )}
+          {fileUploaded && showSheetDialog && (
+            <SheetNameAndCitySelectionDialog
+              dialogDataProp={sheetsNames}
+              selectedSheetNameProp={setSelectedSheetName}
+              handleSelectSheetnameChange={handleSheetNameSelected}
+              onDialogClose={() => setShowSheetDialog(false)}
+              citiesProp={citiesState}
+            />
+          )}
 
-            {!fileUploaded && (
-                <UploadFileComponent />
-                
-            )}
-          </Stack>
-        </Box>
+          {file && selectedSheetName && !showSheetDialog && !loading && (
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <TabList
+                  onChange={handleChange}
+                  aria-label="lab API tabs example"
+                >
+                  <Tab label="4G" value="1" />
+                  <Tab label="3G" value="2" />
+                  <Tab label="2G" value="3" />
+                </TabList>
+              </Box>
+              <TabPanel value="1">
+                <MainGrid
+                  rrcConnectionRateProp={rpcConnectionRateArray}
+                  userDownloadRate={userThroughputDL}
+                  userUploadRate={userThroughputUL}
+                  erabSuccessRateProp={erabSuccessRate}
+                  uploadtTrafficProp={trafficVolumeUL}
+                  downloadTrafficProp={trafficVolumeDL}
+                  hourProp={hours}
+                  cellAvailabilityProp={cellAvailability}
+                  sessionContinuityProp={sessionContinuityData}
+                  hoursDataProp={hours}
+                />
+              </TabPanel>
+              <TabPanel value="2">
+                <Typography>No Data found</Typography>
+              </TabPanel>
+              <TabPanel value="3">
+                <Typography>No Data found</Typography>
+              </TabPanel>
+            </TabContext>
+          )}
+
+          {!fileUploaded && <UploadFileComponent />}
+        </Stack>
       </Box>
+    </Box>
   );
 }

@@ -19,7 +19,8 @@ import emailjs from "emailjs-com";
 import ColorModeSelect from "../../../shared-theme/ColorModeSelect";
 import { Snackbar } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
+import singupService, { signupService } from "../../../../service/Login";
+import { useNavigate } from "react-router-dom";
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -65,24 +66,41 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SingupComponent(props) {
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
-  const [lastNameError, setLastNameError] = React.useState(true);
-  const [lastNameErrorMessage, setNameErrorMessage] = React.useState("");
+  const [lastNameError, setLastNameError] = React.useState(false);
+  const [lastNameErrorMessage, setLastNameErrorMessage] = React.useState("");
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
+  const [passwordConfirmationError, setPasswordConfirmationError] =
+    React.useState(false);
+  const [
+    passwordErrorConfirmationMessage,
+    setPasswordErrorConfirmationMessage,
+  ] = React.useState("");
+
   const [open, setOpen] = useState(false);
 
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
+  const [info, setInfo] = useState("");
+  const navigate = useNavigate()
   const validateInputs = () => {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const firstName = document.getElementById("firstName");
     const lastName = document.getElementById("lastName");
+    const passwordConfirmation = document.getElementById(
+      "passwordConfirmation"
+    );
 
     let isValid = true;
 
+    // Email validation
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage("Please enter a valid email address.");
@@ -92,6 +110,27 @@ export default function SingupComponent(props) {
       setEmailErrorMessage("");
     }
 
+    // First name validation
+    if (!firstName.value || firstName.value.length < 1) {
+      setFirstNameError(true);
+      setFirstNameErrorMessage("First name is required.");
+      isValid = false;
+    } else {
+      setFirstNameError(false);
+      setFirstNameErrorMessage("");
+    }
+
+    // Last name validation
+    if (!lastName.value || lastName.value.length < 1) {
+      setLastNameError(true);
+      setLastNameErrorMessage("Last name is required."); // Fixed setter name
+      isValid = false;
+    } else {
+      setLastNameError(false);
+      setLastNameErrorMessage(""); // Fixed setter name
+    }
+
+    // Password validation
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
@@ -101,22 +140,17 @@ export default function SingupComponent(props) {
       setPasswordErrorMessage("");
     }
 
-    if (!firstName.value || firstName.value.length < 1) {
-      setFirstNameError(true);
-      setFirstNameErrorMessage("Name is required.");
+    // Password confirmation validation
+    if (
+      !passwordConfirmation.value ||
+      password.value !== passwordConfirmation.value
+    ) {
+      setPasswordConfirmationError(true); // Should be boolean
+      setPasswordErrorConfirmationMessage("Passwords do not match.");
       isValid = false;
     } else {
-      setFirstNameError(false);
-      setFirstNameErrorMessage("");
-    }
-
-    if (!lastName.value || lastName.value.length < 1) {
-      setLastNameError(true);
-      setLastNameError("last name is required.");
-      isValid = false;
-    } else {
-      setLastNameError(false);
-      setLastNameError("");
+      setPasswordConfirmationError(false);
+      setPasswordErrorConfirmationMessage("");
     }
 
     return isValid;
@@ -125,28 +159,15 @@ export default function SingupComponent(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const endpoint = "https://getform.io/f/axowqxrb";
-
-    const formData = new FormData(e.currentTarget);
-    formData.append("name", formData.get("firstName"));
-    formData.append("email", formData.get("email"));
-
-    try {
-      // const response = await fetch(endpoint, {
-      //   method: "POST",
-      //   body: formData,
-      // });
-      //   console.log("Response:", response);
-      // if (response.redirected) {
-      //   alert("Signup information sent to the administrator!");
-
-      // } else {
-      //   throw new Error("Network response was not ok");
-      // }
-      setOpen(true);
-    } catch (error) {
-      console.error("Failed to send form:", error);
-      alert("Failed to send signup information. Please try again.");
+    // Validate inputs first
+    if (validateInputs()) {
+      try {
+        await signupService(firstName, lastName, email, password);
+        setInfo("Registration successful, an email has been sent to the admin to enable your account.");
+      } catch (error) {
+        setInfo("Registration failed. Please try again.");
+        console.error("Signup error:", error);
+      }
     }
   };
 
@@ -154,7 +175,7 @@ export default function SingupComponent(props) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <ColorModeSelect sx={{ position: "fixed", top: "1rem", right: "1rem" }} />
-      
+
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
@@ -177,6 +198,9 @@ export default function SingupComponent(props) {
                 required
                 fullWidth
                 id="firstName"
+                onChange={(e) => {
+                  setFirstName(e.target.value);
+                }}
                 error={firstNameError}
                 helperText={firstNameErrorMessage}
                 color={firstNameError ? "error" : "primary"}
@@ -188,6 +212,9 @@ export default function SingupComponent(props) {
                 autoComplete="lastName"
                 name="lastName"
                 required
+                onChange={(e) => {
+                  setLastName(e.target.value);
+                }}
                 fullWidth
                 id="lastName"
                 error={lastNameError}
@@ -201,6 +228,9 @@ export default function SingupComponent(props) {
                 required
                 fullWidth
                 id="email"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
                 placeholder="your@email.com"
                 name="email"
                 autoComplete="email"
@@ -220,6 +250,31 @@ export default function SingupComponent(props) {
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                variant="outlined"
+                error={passwordConfirmationError}
+                helperText={passwordErrorConfirmationMessage}
+                color={passwordConfirmationError ? "error" : "primary"}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel htmlFor="passwordConfirmation">
+                Password Confirmation
+              </FormLabel>
+              <TextField
+                required
+                fullWidth
+                name="passwordConfirmation"
+                placeholder="••••••"
+                type="password"
+                id="passwordConfirmation"
+                autoComplete="new-password"
+                onChange={(e) => {
+                  setPasswordConfirmation(e.target.value);
+                }}
                 variant="outlined"
                 error={passwordError}
                 helperText={passwordErrorMessage}
@@ -231,17 +286,13 @@ export default function SingupComponent(props) {
                 height: 50,
               }}
             ></Box>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={validateInputs}
-            >
+            <Button type="submit" fullWidth variant="contained">
               Sign up
             </Button>
+            <Button onClick={()=>{navigate('/login')}} fullWidth variant="outlined">Back to login</Button>
+            {info && <Typography>{info}</Typography>}
           </Box>
         </Card>
-        
       </SignUpContainer>
     </AppTheme>
   );

@@ -14,6 +14,9 @@ import StatCard from "./StatCard";
 import ThroughtputLineChart from "./custom/ThroughtputLineChart";
 import SessionContinuityBarchart from "./custom/SessionContinuityBarchart";
 import KpiDataGrid from "./KpiDataGrid";
+import RrcConnectionSuccessLineChart from "./custom/RrcConnectionSuccessLineChart";
+import SessionContinuityLinechartArea from "./custom/SessionContinuityLineChartArea";
+import CellAvailabilityLineChart from "./custom/CellAvailabityLineChart";
 
 export default function MainGrid({
   rrcConnectionRateProp,
@@ -29,15 +32,20 @@ export default function MainGrid({
   uploadedFile, // Add uploadedFile as a prop
 }) {
   const [columnNames, setColumnNames] = useState();
-  const [rrcConnectionRate, setRrcConnectionRate] = useState(rrcConnectionRateProp);
+  const [rrcConnectionRate, setRrcConnectionRate] = useState(
+    rrcConnectionRateProp
+  );
   const [userThroughputDL, setUserThroughtputDL] = useState(userDownloadRate);
   const [userThroughputUL, setUserThroughtputUL] = useState(userUploadRate);
   const [erabSuccessRate, setErabSuccessRate] = useState(erabSuccessRateProp);
   const [uploadtTraffic, setUploadtTraffic] = useState(uploadtTrafficProp);
   const [downloadTraffic, setDownloadtTraffic] = useState(downloadTrafficProp);
-  const [cellAvailability, setCellAvailability] = useState(cellAvailabilityProp);
+  const [cellAvailability, setCellAvailability] =
+    useState(cellAvailabilityProp);
   const [hours, setHours] = useState(hourProp);
-  const [sessionContinuity, setSessionContinuity] = useState(sessionContinuityProp);
+  const [sessionContinuity, setSessionContinuity] = useState(
+    sessionContinuityProp
+  );
   // const [IntraFrequencyHOSR, setIntraFrequencyHOSR] = useState(IntraFrequencyHOSRProp);
   // const [pmCellDowntimeAuto, setPmCellDowntimeAuto] = useState(pmCellDowntimeAutoProp);
   // const [pmCellDowntimeMan, setPmCellDowntimeMan] = useState(pmCellDowntimeManProp);
@@ -67,7 +75,6 @@ export default function MainGrid({
   // const [CellThroughputULMps, setCellThroughputULMps] = useState(CellThroughputULMps_Prop);
   // const [city, setCity] = useState(CityProp);
   // const [lteSessionContinuity, setLTESessionContinuity] = useState(LTE_Session_ContinuityProp);
-
 
   // Calculate averages for the cards
   const [rrcConnectionRateAvg, setRrcConnectionRateAvg] = useState(
@@ -149,13 +156,38 @@ export default function MainGrid({
           />
         </Grid>
       </Grid>
-      <Grid container spacing={2} columns={1}>
-        <Grid size={{ xs: 12, lg: 9 }}>
+
+      <Grid container spacing={2} columns={12}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <ThroughtputLineChart
             throughtputDataUlProp={userThroughputUL}
             throughtputDataDlProp={userThroughputDL}
             hoursDataProp={hours}
           />
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 6 }}>
+          <RrcConnectionSuccessLineChart
+            rrcConnectionRateProp={rrcConnectionRate}
+            hoursProp={hours}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2} columns={12}>
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <SessionContinuityLinechartArea
+            sessionContinuityProp={sessionContinuity}
+            hoursProp={hours}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 6 }}>
+          <CellAvailabilityLineChart
+            cellAvailabilityProp = {cellAvailability}
+            hoursProp={hours}
+          />
+
         </Grid>
       </Grid>
 

@@ -13,7 +13,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 export default function MenuContent({ userRole }) {
   const [isAdmin, setIsAdmin] = React.useState(userRole === "ADMIN");
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -27,6 +27,7 @@ export default function MenuContent({ userRole }) {
   };
   const mainListItems = [
     { text: "Dashboard", icon: <AnalyticsRoundedIcon />, slug: "/dashboard" },
+    {text:"Custom chart", icon: <AutoAwesomeIcon />, slug:"/custom"},
     ...(userRole === "ADMIN"
       ? [
           {

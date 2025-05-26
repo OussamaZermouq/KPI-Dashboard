@@ -13,7 +13,7 @@ export async function getKPI(sheetName, file) {
     maxBodyLength: Infinity,
     url: `http://127.0.0.1:8000/upload?sheet_name=${encodeURIComponent(sheetName)}`,
     headers: {
-      "Authorization": `Bearer ${token}`,
+      "Authorization": `${token}`,
       "Content-Type": "multipart/form-data",
     },
     data: data,
@@ -28,7 +28,7 @@ export async function getKPI(sheetName, file) {
   }
 }
 
-export async function getSheetNames(file){
+export async function getFileInfo(file){
   const token = localStorage.getItem('jwt-token');
   if (!token){
 
@@ -40,9 +40,9 @@ export async function getSheetNames(file){
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `http://127.0.0.1:8000/sheets`,
+    url: `http://127.0.0.1:8000/info`,
     headers: {
-      "Authorization": `Bearer ${token}`,
+      "Authorization": `${token}`,
       "Content-Type": "multipart/form-data",
     },
     data: data,

@@ -19,11 +19,11 @@ import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import LoginService from "../../../../service/Login";
 
 import { colorSchemes } from "../../../shared-theme/themePrimitives";
+import { useNavigate } from "react-router-dom";
 function ColorSchemeToggle(props) {
   const { onClick, ...other } = props;
   const { mode, setMode } = useColorScheme();
   const [mounted, setMounted] = React.useState(false);
-
   React.useEffect(() => setMounted(true), []);
 
   return (
@@ -63,16 +63,19 @@ const customTheme = extendTheme({ defaultColorScheme: "dark", colorSchemes: colo
 export default function LoginComponent() {
   const [error, setError] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const navigate = useNavigate();
+
+
   const handleLoginClick = async (email, password) => {
     setLoading(true);
+    setError("");
     const result = await LoginService(email, password);
     if (result === 200) {
-      window.location.href = "/dashboard"
+      navigate('/dashboard')
     }
-    else if (result === 401){
-      setError("You account is not yet enabled.");
-
-    } 
+    else if (result.response.status === 403){
+      setError("Your account is not yet enabled.");
+    }
     else {
       setError("Your credentials seem to be wrong, please try again");
     }
@@ -155,8 +158,11 @@ export default function LoginComponent() {
                 </Typography>
                 <Typography level="body-sm">
                   New user?{" "}
-                  <Link href="/signup" level="title-sm" >
+                  <Button  variant="text" onClick={()=>navigate('/signup')}>
                     Sign up!
+
+                  </Button>
+                  <Link href="/signup" level="title-sm" >
                   </Link>
                 </Typography>
               </Stack>

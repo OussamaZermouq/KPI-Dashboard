@@ -30,11 +30,44 @@ const LoginService = async (email, password) => {
     return response.status;
   } catch (err) {
     console.log(err);
+    return err
   }
 };
 export default LoginService;
 
+export const signupService = async (firstName, lastName, email, password) => {
+  const endpoint = "https://getform.io/f/axowqxrb";
 
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: {
+        name: firstName + " " + lastName,
+        email: email,
+      },
+    });
+    console.log("Response:", response);
+    if (response.status === 200) {
+      let config = {
+        method:"post",
+        url: BASE_URL+ "/signup",
+        data: {
+          email: email,
+          password: password,
+          firstName: firstName,
+          lastName: lastName,
+        },
+      };
+      console.log({config})
+      const userCreationResponse = await axios.request(config);
+      console.log(userCreationResponse)
+    }
+    return response;
+  } catch (error) {
+    console.error("Failed to send form:", error);
+    return error;
+  }
+};
 
 /**
  * Refresh token function - gets a new access token using the refresh token
@@ -42,52 +75,48 @@ export default LoginService;
  */
 
 export async function refreshToken() {
-  
   const REFRESH_TOKEN = localStorage.getItem("refresh-token");
-  
+
   if (!REFRESH_TOKEN) {
     return false;
   }
-  
+
   let config = {
     method: "post",
     url: BASE_URL + "/refresh",
     headers: {
       Accept: "*/*",
     },
-    data:{
+    data: {
       "refresh-token": REFRESH_TOKEN,
-    }
+    },
   };
 
   try {
     const response = await axios.request(config);
     if (response.status === 200) {
-      
       localStorage.setItem(
         "jwt-token",
         "Bearer " + response.data["access_token"]
       );
-      
+
       localStorage.setItem(
-        "refresh-token", 
+        "refresh-token",
         "Bearer " + response.data["refresh_token"]
       );
       return true;
-
     } else {
       localStorage.removeItem("jwt-token");
       localStorage.removeItem("refresh-token");
-    
+
       return false;
     }
   } catch (e) {
-    
     console.error("Token refresh failed:", e);
-    
+
     localStorage.removeItem("jwt-token");
     localStorage.removeItem("refresh-token");
-    
+
     return false;
   }
 }

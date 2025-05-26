@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import Dashboard from "./components/dashboard/Dashboard";
 import LoginComponent from "./components/dashboard/components/custom/LoginComponent";
 import {
@@ -19,10 +19,15 @@ import {
   CssVarsProvider,
   THEME_ID as MATERIAL_THEME_ID,
 } from "@mui/material/styles";
+import CustomChatCreationPage from "./components/customchart/CustomChatCreationPage";
+
+export const CityContext = createContext(null);
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [mode, setMode] = useState("light");
-
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cities, setCities] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("jwt-token");
     if (token) {
@@ -42,9 +47,17 @@ function App() {
   });
 
   return (
-      <ThemeProvider theme={{ [MATERIAL_THEME_ID]: theme }}>
-        <JoyCssVarsProvider>
-          <CssBaseline enableColorScheme />
+    <ThemeProvider theme={{ [MATERIAL_THEME_ID]: theme }}>
+      <JoyCssVarsProvider>
+        <CssBaseline enableColorScheme />
+        <CityContext.Provider
+          value={{
+            selectedCity,
+            setSelectedCity,
+            cities, 
+            setCities
+          }}
+        >
           <Router>
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -67,10 +80,19 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+               <Route
+                path="/custom"
+                element={
+                  <ProtectedRoute>
+                    <CustomChatCreationPage />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </Router>
-        </JoyCssVarsProvider>
-      </ThemeProvider>
+        </CityContext.Provider>
+      </JoyCssVarsProvider>
+    </ThemeProvider>
   );
 }
 
