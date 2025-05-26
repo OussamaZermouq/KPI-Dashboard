@@ -13,47 +13,8 @@ import {
   Tooltip as RechartsTooltip,
 } from "recharts";
 
-// Filter component for date and hour selection
-function FilterComponent({ hoursDataProp = [], onFilter }) {
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedHour, setSelectedHour] = useState("");
-  // Fix: Only split if h is a string and contains a space
-  const uniqueDates = Array.from(
-    new Set(
-      hoursDataProp
-        .filter(h => typeof h === "string" && h.includes(" "))
-        .map(h => h.split(" ")[0])
-    )
-  );
-  const uniqueHours = Array.from(
-    new Set(
-      hoursDataProp
-        .filter(h => typeof h === "string" && h.includes(" "))
-        .map(h => h.split(" ")[1])
-    )
-  );
-  return (
-    <div style={{ marginBottom: 16 }}>
-      <label>Date: </label>
-      <select value={selectedDate} onChange={e => setSelectedDate(e.target.value)}>
-        <option value="">All</option>
-        {uniqueDates.map(date => (
-          <option key={date} value={date}>{date}</option>
-        ))}
-      </select>
-      <label style={{ marginLeft: 8 }}>Hour: </label>
-      <select value={selectedHour} onChange={e => setSelectedHour(e.target.value)}>
-        <option value="">All</option>
-        {uniqueHours.map(hour => (
-          <option key={hour} value={hour}>{hour}</option>
-        ))}
-      </select>
-      <button style={{ marginLeft: 8 }} onClick={() => onFilter(selectedDate, selectedHour)}>Filter</button>
-    </div>
-  );
-}
 
-export default function KpiDataGrid({ 
+function KpiDataGrid({ 
   rrcConnectionRateProp,
   userDownloadRate,
   userUploadRate,
@@ -274,7 +235,7 @@ export default function KpiDataGrid({
  
 return (
     <Box sx={{ width: "100%", mt: 4 }}>
-      <FilterComponent hours={Array.isArray(hoursDataProp) ? hoursDataProp : []} onFilter={handleFilter} />
+     {/* <FilterComponent hours={Array.isArray(hoursDataProp) ? hoursDataProp : []} onFilter={handleFilter} />*/} 
       {/* KPI Trend Table */}
       <Box sx={{ height: 500, width: "100%", mb: 4 }}>
         <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
@@ -291,3 +252,4 @@ return (
     </Box>
   );
 }
+export default KpiDataGrid;
