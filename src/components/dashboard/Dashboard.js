@@ -42,6 +42,7 @@ export default function Dashboard({ onLogout, ...props }) {
   const [selectedSheetName, setSelectedSheetName] = useState(null);
   const [showSheetDialog, setShowSheetDialog] = useState(true);
   const [file, setFile] = useState();
+  const [city, setCity] = useState();
   const [userSelectedCity, setUserSelectedCity] = useState();
   const [citiesState, setCitiesState] = useState([]);
   const handleChange = (event, newValue) => {
@@ -98,6 +99,10 @@ export default function Dashboard({ onLogout, ...props }) {
       let sessionContinuity = Object.values(kpiData["data"]).map(
         (kpi) => kpi["9_LTE Session Continuity"]
       );
+      let cityData = Object.values(kpiData['data']).map(
+        (kpi)=>kpi["City"]
+      )
+
       setRpcConnectionRateArray(rrcConnectionRate);
       setUserThroughputDL(userDownloadRate);
       setUserThroughputUL(userUploadRate);
@@ -107,6 +112,7 @@ export default function Dashboard({ onLogout, ...props }) {
       setHours(hourData);
       setCellAvailability(cellAvailability);
       setSeesionContinuityData(sessionContinuity);
+      setCity(cityData)
     } catch (error) {
       console.error("Error fetching KPI data:", error);
     } finally {
@@ -265,6 +271,7 @@ export default function Dashboard({ onLogout, ...props }) {
                   cellAvailabilityProp={cellAvailability}
                   sessionContinuityProp={sessionContinuityData}
                   hoursDataProp={hours}
+                  CityProp={city}
                 />
               </TabPanel>
               <TabPanel value="2">

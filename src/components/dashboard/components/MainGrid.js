@@ -179,15 +179,7 @@ export default function MainGrid({
           />
         </Grid>
       </Grid>
-      <Grid container spacing={2} columns={1}>
-        <Grid size={{ xs: 12, lg: 9 }}>
-          <ThroughtputLineChart
-            throughtputDataUlProp={userThroughputUL}
-            throughtputDataDlProp={userThroughputDL}
-            hoursDataProp={hours}
-          />
-        </Grid>
-      </Grid>
+
 
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 6 }}>
@@ -259,7 +251,7 @@ export default function MainGrid({
           ULRLCBlerRate_Prop={ULRLCBlerRate}
           CellThroughputDLMbps_Prop={CellThroughputDLMbps}
           CellThroughputULMps_Prop={CellThroughputULMps}
-          CityProp={city}
+          cityProp={city}
           LTE_Session_ContinuityProp={lteSessionContinuity}
             />
           </Grid>

@@ -9,7 +9,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import SingupComponent from "./components/dashboard/components/custom/SignupComponent";
-import TestComponent from "./components/dashboard/components/custom/test";
+import Test from "./components/dashboard/components/custom/test";
 import UsersPage from "./components/users/Users";
 import { CssVarsProvider as JoyCssVarsProvider } from "@mui/joy/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -63,7 +63,7 @@ function App() {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/login" element={<LoginComponent />} />
               <Route path="/signup" element={<SingupComponent />} />
-              <Route path="/test" element={<TestComponent />} />
+              <Route path="/test" element={<Test />} />
               <Route
                 path="/users"
                 element={

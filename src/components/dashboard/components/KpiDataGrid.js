@@ -52,7 +52,7 @@ function KpiDataGrid({
   CellThroughputDLMbps_Prop,
   CellThroughputULMps_Prop,
   hoursDataProp,
-  cityProb,
+  cityProp,
  }) {
   const [rrcConnectionRate, setRrcConnectionRate] = useState(rrcConnectionRateProp);
   const [userThroughputDL, setUserThroughputDL] = useState(userDownloadRate);
@@ -91,7 +91,7 @@ function KpiDataGrid({
   const [ulRLCBlerRate, setUlRLCBlerRate] = useState(ULRLCBlerRate_Prop);
   const [cellThroughputDLMbps, setCellThroughputDLMbps] = useState(CellThroughputDLMbps_Prop);
   const [cellThroughputULMps, setCellThroughputULMps] = useState(CellThroughputULMps_Prop);
-  const [city, setCity] = useState(cityProb); 
+  const [city, setCity] = useState(cityProp); 
   const [filteredIndexes, setFilteredIndexes] = useState(null);
   
   const isValidKpi = (value) => {
@@ -170,7 +170,7 @@ function KpiDataGrid({
 
   const columns = [
     { field: "kpi", headerName: "KPI", flex: 1 },
-    { field: "VAleur", headerName: "VAleur", flex: 1 },
+    { field: "Valeur", headerName: "Valeur", flex: 1 },
     { field: "city", headerName: "City", flex: 1 },
     { field: "hours", headerName: "Hours", flex: 1 }, // Add Hours column
     {
@@ -228,14 +228,14 @@ function KpiDataGrid({
   // Enhance rows to show filtered KPI value, city, and hours for each row
   const enhancedRows = rows.map(row => ({
     ...row,
-    VAleur: getFilteredValue(kpiMap[row.kpi]),
-    city: getFilteredValue(cityProb),
+    Valeur: getFilteredValue(kpiMap[row.kpi]),
+    city: getFilteredValue(cityProp),
     hours: getFilteredValue(hoursDataProp), // Add hours value to each row
   }));
  
 return (
     <Box sx={{ width: "100%", mt: 4 }}>
-     {/* <FilterComponent hours={Array.isArray(hoursDataProp) ? hoursDataProp : []} onFilter={handleFilter} />*/} 
+     {/* <FilterComponent hours={Array.isArray(hoursDataProp) ? hoursDataProp : []} onFilter={handleFilter} />  */}
       {/* KPI Trend Table */}
       <Box sx={{ height: 500, width: "100%", mb: 4 }}>
         <Typography component="h2" variant="h6" sx={{ mb: 2 }}>

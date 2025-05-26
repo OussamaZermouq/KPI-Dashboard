@@ -5,6 +5,7 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import ChooseChartType from './ChooseChartType';
 
 const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 
@@ -87,6 +88,8 @@ export default function CreateCustomChartStepper() {
         </React.Fragment>
       ) : (
         <React.Fragment>
+
+          {activeStep === 0 && <ChooseChartType />}
           <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
