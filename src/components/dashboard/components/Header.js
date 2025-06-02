@@ -7,11 +7,11 @@ import MenuButton from "./MenuButton";
 import ColorModeIconDropdown from "../../shared-theme/ColorModeIconDropdown";
 import Search from "./Search";
 import CitySelect from "./custom/CitySelectComponent";
-import { CityContext } from "../../../App";
+import useCity from "../../../hooks/useCity";
+
 
 export default function Header() {
-  const { selectedCity } = React.useContext(CityContext);
-
+  //const { selectedCity, cities } = useCity();
   return (
     <Stack
       direction="row"
@@ -28,7 +28,7 @@ export default function Header() {
       <NavbarBreadcrumbs />
       <Stack direction="row" sx={{ gap: 1 }}>
         <Search />
-        {selectedCity && <CitySelect />}
+        {/* {selectedCity && cities && <CitySelect />} */}
         <CustomDatePicker />
         <MenuButton showBadge aria-label="Open notifications">
           <NotificationsRoundedIcon />

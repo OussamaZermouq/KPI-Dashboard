@@ -20,39 +20,54 @@ export default function MainGrid({
   uploadtTrafficProp,
   downloadTrafficProp,
   hourProp,
-  cellAvailabilityProp,
   sessionContinuityProp,
   sheetName, // Add sheetName as a prop
   uploadedFile, // Add uploadedFile as a prop
   IntraFrequencyHOSRProp,
   pmCellDowntimeAutoProp,
   pmCellDowntimeManProp,
+  User_throughput_DL_CAProp,
   TrafficVolumeUL_GbytesProp,
   TrafficVolumeDL_GbytesProp,
   Active_usersProp,
   pmActiveUeDlSumProp,
-  _CSFBtoUMTSProp,
   _CSFBtoGSMProp,
   UserthroughputDLCAProp,
-  CSFB_SR__Prop,
-  PRB_UL_NewProp,
   CQIProp,
-  PRB_DL_NewProp,
   SINR_PuschdBProp,
-  QPSK__Prop,
-  _16QAM__Prop,
-  _64QAM__Prop,
-  _256QAM__Prop,
   SpectralEfficiencybpshz__Prop,
   UserthroughputULCAProp,
-  RSSI_dbmProp,
-  RSSI_PUCCHdBmProp,
+  RSSI_dbm_Prop,
+  RSSI_PUCCH_dBm_Prop,
   DLRLCBlerRate_Prop,
   ULRLCBlerRate_Prop,
   CellThroughputDLMbps_Prop,
-  CellThroughputULMps_Prop,
+  Cell_Throughput_UL_Mbps_Prop,
+  _CSFB_to_GSMProp,
   CityProp,
-  LTE_Session_ContinuityProp,
+  _9_LTE_Session_ContinuityProp,
+  cellAvailabilityProp,
+  S1_Signaling_SetupProp,
+  RRC_Connect_UserProp,
+  _3_E_RAB_Drop_Rate_Prop,
+  _6_User_throughput_DLProp,
+  _7_User_throughtput__ULProp,
+  Inter_Frequency_HOSRProp,
+  Traffic_Volume_UL__Gbytes_Prop,
+  Traffic_Volume_DL__Gbytes_Prop,
+  _CSFB_to_UMTSProp,
+  CSFB_SR__Prop,
+  PRB_DL_NewProp,
+  PRB_UL_NewProp,
+  SINR_Pusch_dB_Prop,
+  QPSK_Prop, 
+  _16QAM_Prop,
+  _64QAM_Prop,
+  _256QAM_Prop,
+  Average_DL_UE_LatencyProp,
+  UL_RLC_Bler_Rate_Prop,
+  DL_RLC_Bler_Rate_Prop,
+  User_throughput_UL_CAProp,
 }) {
   const [columnNames, setColumnNames] = useState();
   const [rrcConnectionRate, setRrcConnectionRate] = useState(
@@ -73,7 +88,7 @@ export default function MainGrid({
   const [TrafficVolumeDL_Gbytes, setTrafficVolumeDL_Gbytes] = useState(TrafficVolumeDL_GbytesProp);
   const [Active_users, setActive_users] = useState(Active_usersProp);
   const [pmActiveUeDlSum, setPmActiveUeDlSum] = useState(pmActiveUeDlSumProp);
-  const [_CSFBtoUMTS, set_CSFBtoUMTS] = useState(_CSFBtoUMTSProp);
+  const [_CSFBtoUMTS, set_CSFBtoUMTS] = useState(_CSFB_to_UMTSProp);
   const [_CSFBtoGSM, set_CSFBtoGSM] = useState(_CSFBtoGSMProp);
   const [UserthroughputDLCA, setUserthroughputDLCA] = useState(UserthroughputDLCAProp);
   const [CSFB_SR_, setCSFB_SR_] = useState(CSFB_SR__Prop);
@@ -81,20 +96,41 @@ export default function MainGrid({
   const [CQI, setCQI] = useState(CQIProp);
   const [PRB_DL_New, setPRB_DL_New] = useState(PRB_DL_NewProp);
   const [SINR_PuschdB, setSINR_PuschdB] = useState(SINR_PuschdBProp);
-  const [QPSK_, setQPSK_] = useState(QPSK__Prop);
-  const [_16QAM_, set_16QAM_] = useState(_16QAM__Prop);
-  const [_64QAM_, set_64QAM_] = useState(_64QAM__Prop);
-  const [_256QAM_, set_256QAM_] = useState(_256QAM__Prop);
+  const [QPSK_, setQPSK_] = useState(QPSK_Prop);
+  const [_16QAM_, set_16QAM_] = useState(_16QAM_Prop);
+  const [_64QAM_, set_64QAM_] = useState(_64QAM_Prop);
+  const [_256QAM_, set_256QAM_] = useState(_256QAM_Prop);
   const [SpectralEfficiencybpshz_, setSpectralEfficiencybpshz_] = useState(SpectralEfficiencybpshz__Prop);
   const [UserthroughputULCA, setUserthroughputULCA] = useState(UserthroughputULCAProp);
-  const [RSSI_dbm, setRSSI_dbm] = useState(RSSI_dbmProp);
-  const [RSSI_PUCCHdBm, setRSSI_PUCCHdBm] = useState(RSSI_PUCCHdBmProp);
+  const [RSSI_dbm, setRSSI_dbm] = useState(RSSI_dbm_Prop);
+  const [RSSI_PUCCHdBm, setRSSI_PUCCHdBm] = useState(RSSI_PUCCH_dBm_Prop);
   const [DLRLCBlerRate, setDLRLCBlerRate] = useState(DLRLCBlerRate_Prop);
   const [ULRLCBlerRate, setULRLCBlerRate] = useState(ULRLCBlerRate_Prop);
   const [CellThroughputDLMbps, setCellThroughputDLMbps] = useState(CellThroughputDLMbps_Prop);
-  const [CellThroughputULMps, setCellThroughputULMps] = useState(CellThroughputULMps_Prop);
+  const [CellThroughputULMps, setCellThroughputULMps] = useState(Cell_Throughput_UL_Mbps_Prop);
   const [city, setCity] = useState(CityProp);
-  const [lteSessionContinuity, setLTESessionContinuity] = useState(LTE_Session_ContinuityProp);
+  const [lteSessionContinuity, setLTESessionContinuity] = useState(_9_LTE_Session_ContinuityProp);
+  const [S1_Signaling_Setup, setS1_Signaling_Setup] = useState(S1_Signaling_SetupProp);
+  const [RRC_Connect_User, setRRC_Connect_User] = useState(RRC_Connect_UserProp);
+  const [_2_ERAB_Setup_Success_Rate, set_2_ERAB_Setup_Success_Rate] = useState(erabSuccessRateProp);
+  const [_3_E_RAB_Drop_Rate_, set_3_E_RAB_Drop_Rate_] = useState(_3_E_RAB_Drop_Rate_Prop);
+  const [_6_User_throughput_DL, set_6_User_throughput_DL] = useState(_6_User_throughput_DLProp);
+  const [_7_User_throughtput__UL, set_7_User_throughtput__UL] = useState(_7_User_throughtput__ULProp);
+  const [Inter_Frequency_HOSR, setInter_Frequency__HOSR] = useState(Inter_Frequency_HOSRProp);
+  const[Traffic_Volume_UL__Gbytes, setTraffic_Volume_UL__Gbytes] = useState(Traffic_Volume_UL__Gbytes_Prop);
+  const [Traffic_Volume_DL__Gbytes, setTraffic_Volume_DL__Gbytes] = useState(Traffic_Volume_DL__Gbytes_Prop);
+  // const [_CSFB_to_UMTS, set_CSFBtoUMTS] = useState(_CSFB_to_UMTSProp);
+  const [_CSFB_to_UMTS, set_CSFB_to_UMTS] = useState(_CSFB_to_UMTSProp);
+  const [User_throughput_DL_CA, setUser_throughput_DL_CA] = useState(User_throughput_DL_CAProp);
+  const [RSSI_dbm_, setRSSI_dbm_] = useState(RSSI_dbm_Prop);
+  const [RSSI_PUCCH_dBm_, setRSSI_PUCCH_dBm_] = useState(RSSI_PUCCH_dBm_Prop);
+  const [CSFB_SR__, setCSFB_SR__] = useState(CSFB_SR__Prop);
+  const [_CSFB_to_GSM, set_CSFB_to_GSM] = useState(_CSFB_to_GSMProp);
+  const [SINR_Pusch_dB, setSINR_Pusch_dB] = useState(SINR_Pusch_dB_Prop);
+  const [Average_DL_UE_Latency, setAverage_DL_UE_Latency] = useState(Average_DL_UE_LatencyProp);
+  const [UL_RLC_Bler_Rate_, setUL_RLC_Bler_Rate_Prop] = useState(UL_RLC_Bler_Rate_Prop);
+  const [DL_RLC_Bler_Rate_, setDL_RLC_Bler_Rate_Prop] = useState(DL_RLC_Bler_Rate_Prop);
+  const [User_throughput_UL_CA, setUser_throughput_UL_CA] = useState(User_throughput_UL_CAProp);
 
   const [sessionContinuity, setSessionContinuity] = useState(
     sessionContinuityProp
@@ -220,39 +256,57 @@ export default function MainGrid({
           throughtputDataUlProp={userThroughputUL}
           throughtputDataDlProp={userThroughputDL}
           hoursDataProp={hours} // Make sure hoursProp is a non-empty array of strings like "2024-05-25 13"
-          rrcConnectionRateProp={rrcConnectionRate}
-          erabSuccessRateProp={erabSuccessRate}
+          _1_RRC_Connection_Success_RateProp={rrcConnectionRate}
+          _2_ERAB_Setup_Success_RateProp={_2_ERAB_Setup_Success_Rate}
           uploadtTrafficProp={uploadtTraffic}
           downloadTrafficProp={downloadTraffic}
-          IntraFrequencyHOSRProp={IntraFrequencyHOSR}
+          _4_Intra_Frequency_HOSRProp={IntraFrequencyHOSR}
           pmCellDowntimeAutoProp={pmCellDowntimeAuto}
           pmCellDowntimeManProp={pmCellDowntimeMan}
           TrafficVolumeUL_GbytesProp={TrafficVolumeUL_Gbytes}
           TrafficVolumeDL_GbytesProp={TrafficVolumeDL_Gbytes}
           Active_usersProp={Active_users}
           pmActiveUeDlSumProp={pmActiveUeDlSum}
-          _CSFBtoUMTSProp={_CSFBtoUMTS}
-          _CSFBtoGSMProp={_CSFBtoGSM}
+          _CSFB_to_UMTSProp={_CSFB_to_UMTS}
           UserthroughputDLCAProp={UserthroughputDLCA}
-          CSFB_SR__Prop={CSFB_SR_}
-          PRB_UL_NewProp={PRB_UL_New}
-          CQIProp={CQI}
-          PRB_DL_NewProp={PRB_DL_New}
           SINR_PuschdBProp={SINR_PuschdB}
-          QPSK__Prop={QPSK_}
-          _16QAM__Prop={_16QAM_}
-          _64QAM__Prop={_64QAM_}
-          _256QAM__Prop={_256QAM_}
-          SpectralEfficiencybpshz__Prop={SpectralEfficiencybpshz_}
+          _16QAM_Prop={_16QAM_}
+          _64QAM_Prop={_64QAM_}
+          _256QAM_Prop={_256QAM_}
+          Spectral_Efficiency__bps_hz___Prop={SpectralEfficiencybpshz_}
           UserthroughputULCAProp={UserthroughputULCA}
-          RSSI_dbmProp={RSSI_dbm}
           RSSI_PUCCHdBmProp={RSSI_PUCCHdBm}
           DLRLCBlerRate_Prop={DLRLCBlerRate}
           ULRLCBlerRate_Prop={ULRLCBlerRate}
           CellThroughputDLMbps_Prop={CellThroughputDLMbps}
-          CellThroughputULMps_Prop={CellThroughputULMps}
+          //ana hna 
+          Cell_Throughput_UL_Mbps_Prop={CellThroughputULMps}
           cityProp={city}
-          LTE_Session_ContinuityProp={lteSessionContinuity}
+          _9_LTE_Session_ContinuityProp={lteSessionContinuity}
+          cellAvailabilityProp={cellAvailability}
+          S1_Signaling_SetupProp={S1_Signaling_Setup}
+          RRC_Connect_UserProp={RRC_Connect_User}
+          _3_E_RAB_Drop_Rate_Prop={_3_E_RAB_Drop_Rate_}
+          _6_User_throughput_DLProp = {_6_User_throughput_DL}
+          _7_User_throughtput_ULProp = {_7_User_throughtput__UL}
+          Inter_Frequency_HOSRProp = {Inter_Frequency_HOSR}
+          Traffic_Volume_UL__Gbytes_Prop = {Traffic_Volume_UL__Gbytes}
+          Traffic_Volume_DL__Gbytes_Prop = {Traffic_Volume_DL__Gbytes}
+          User_throughput_UL_CAProp={User_throughput_UL_CA}
+          _CSFB_to_GSMProp={_CSFB_to_GSM}
+          User_throughput_DL_CAProp={User_throughput_DL_CA}
+          RSSI_dbm_Prop={RSSI_dbm_}
+          RSSI_PUCCH_dBm_Prop={RSSI_PUCCH_dBm_}
+          CSFB_SR__Prop={CSFB_SR__}
+          PRB_DL_NewProp={PRB_DL_New}
+          PRB_UL_NewProp={PRB_UL_New}
+          CQIProp={CQI}
+          SINR_Pusch_dB_Prop={SINR_Pusch_dB}
+          QPSK_Prop={QPSK_}
+          Average_DL_UE_LatencyProp={Average_DL_UE_Latency}
+          UL_RLC_Bler_Rate_Prop = {UL_RLC_Bler_Rate_}
+          DL_RLC_Bler_Rate_Prop = {DL_RLC_Bler_Rate_}
+
             />
           </Grid>
         </Grid>

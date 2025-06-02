@@ -1,38 +1,49 @@
-import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
+import * as React from "react";
+import Grid2 from "@mui/material/Grid2";
 import Box from "@mui/material/Box";
+import ChartTypeCard from "./ChartTypeCard";
 
-export default function ChooseChartType() {
-  const [selectedType, setSelectedType] = useState("");
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: (theme.vars ?? theme).palette.text.secondary,
-    ...theme.applyStyles("dark", {
-      backgroundColor: "#1A2027",
-    }),
-  }));
-
+export default function ChooseChartType({handleChartSelectionCallback}) {
+  const [selectedCard, setSelectedCard] = React.useState({
+    id: "",
+    name: "",
+    picture: "",
+  });
+  const gridItems = [
+    { id: "0", name: "Bar Chart", picture: "/charts/bar-dark.png" },
+    { id: "1", name: "Line Chart", picture: "/charts/lines-dark.png" },
+    { id: "2", name: "Pie Chart", picture: "/charts/pie-dark.png" },
+    { id: "3", name: "Scatter Chart", picture: "/charts/scatter-dark.png" },
+    { id: "4", name: "Sparkline Chart", picture: "/charts/sparkline-dark.png" },
+  ];
+  const handleCardClick = (item) => {
+    setSelectedCard(item);
+    handleChartSelectionCallback(item)
+  };
   return (
-    <Box sx={{ width: "100%" }}>
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid size={6}>
-          <Item>1</Item>
-        </Grid>
-        <Grid size={6}>
-          <Item>2</Item>
-        </Grid>
-        <Grid size={6}>
-          <Item>3</Item>
-        </Grid>
-        <Grid size={6}>
-          <Item>4</Item>
-        </Grid>
-      </Grid>
+    <Box sx={{ width: "80%" }}>
+      <Grid2
+        container
+        spacing={2}
+        columns={3}
+        sx={{
+          justifyContent: "center",
+          m: 5,
+        }}
+      >
+        {gridItems.map((item) => {
+          return (
+            <Grid2 key={item.id}>
+              <ChartTypeCard
+                isSelectedProp={selectedCard.id === item.id}
+                setSelectedCardProp={() => handleCardClick(item)}
+                name={item.name}
+                picture={item.picture}
+              />
+            </Grid2>
+          );
+        })}
+      </Grid2>
     </Box>
   );
 }

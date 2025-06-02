@@ -7,6 +7,7 @@ import {
   Route,
   Routes,
   Navigate,
+  useFetcher,
 } from "react-router-dom";
 import SingupComponent from "./components/dashboard/components/custom/SignupComponent";
 import Test from "./components/dashboard/components/custom/test";
@@ -26,7 +27,7 @@ export const CityContext = createContext(null);
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [mode, setMode] = useState("light");
-  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedCity, setSelectedCity] = useState('');
   const [cities, setCities] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("jwt-token");
@@ -34,6 +35,8 @@ function App() {
       setIsAuthenticated(true);
     }
   }, []);
+
+ 
 
   const ProtectedRoute = ({ children }) => {
     const isAuthenticated = !!localStorage.getItem("jwt-token");

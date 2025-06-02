@@ -8,11 +8,11 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { DialogActions, DialogContent, Box, Divider } from "@mui/material";
-import { CityContext } from "../../../../App";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import useCity from "../../../../hooks/useCity";
 
 export default function SheetNameAndCitySelectionDialog({
   dialogDataProp,
@@ -22,13 +22,12 @@ export default function SheetNameAndCitySelectionDialog({
   citiesProp,
 }) {
   const [open, setOpen] = React.useState(true);
-  const [selectedSheetName, setSelectedSheetName] = React.useState(dialogDataProp[1]);
-  const [selectedCityName, setSelectedCityName] = React.useState();
+  const [selectedSheetName, setSelectedSheetName] = React.useState(
+    dialogDataProp[1]
+  );
+  const [selectedCityName, setSelectedCityName] = React.useState('');
   const radioGroupRef = React.useRef(null);
-  const {setCities, setSelectedCity, cities, selectedCity} = React.useContext(CityContext)
-  
-  // Debug logs
-  console.log("Dialog props:", { dialogDataProp, citiesProp });
+  const { selectedCity, setSelectedCity, cities, setCities } = useCity();
 
   const handleSheetChange = (event) => {
     setSelectedSheetName(event.target.value);
@@ -49,12 +48,13 @@ export default function SheetNameAndCitySelectionDialog({
     handleSelectSheetnameChange(selectedSheetName);
     setOpen(false);
     if (selectedSheetName) {
-      
       setSelectedSheetName(selectedSheetName);
       selectedSheetNameProp(selectedSheetName);
-      //setSelectedCity(selectedCityName)
-      //setCities(citiesProp)
-      
+
+      if (selectedCityName && citiesProp) {
+        // setSelectedCity(selectedCityName)
+        // setCities(citiesProp);
+      }
     }
     onDialogClose();
   };

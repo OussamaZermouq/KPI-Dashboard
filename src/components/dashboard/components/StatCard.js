@@ -76,7 +76,7 @@ function StatCard({ title, value, interval, trend, data, hours }) {
               <Chip size="small" color={color} label={trendValues[trend]} />
             </Stack>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {interval}
+              {interval} 
             </Typography>
           </Stack>
           <Box sx={{ width: '100%', height: 50 }}>
