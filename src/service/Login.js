@@ -36,15 +36,16 @@ const LoginService = async (email, password) => {
 export default LoginService;
 
 export const signupService = async (firstName, lastName, email, password) => {
-  const endpoint = "https://getform.io/f/axowqxrb";
+  const endpoint = "https://getform.io/f/axoywwpb";
 
+  
+    const formData = new FormData();
+    formData.append("name", firstName + " " + lastName);
+    formData.append("email", email);
   try {
     const response = await fetch(endpoint, {
       method: "POST",
-      body: {
-        name: firstName + " " + lastName,
-        email: email,
-      },
+      body: formData,
     });
     console.log("Response:", response);
     if (response.status === 200) {

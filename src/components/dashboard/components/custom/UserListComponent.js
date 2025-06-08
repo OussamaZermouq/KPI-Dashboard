@@ -203,7 +203,7 @@ export default function UserListComponent({ setSnackBarProps }) {
     },
   ];
 
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: 10 };
 
   const handleDialogClose = () => {
     setDialogOpen(false);

@@ -8,7 +8,7 @@ export default function Signup({ onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const endpoint = "https://getform.io/f/axowqxrb";
+    const endpoint = "https://getform.io/f/axoywwpb";
 
     const formData = new FormData();
     formData.append("name", name);

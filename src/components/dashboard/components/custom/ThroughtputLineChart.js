@@ -4,7 +4,7 @@ import { Card, CardContent, Stack, Typography } from "@mui/material";
 
 function ThroughtputLineChart({
   throughtputDataUlProp,
-  hoursDataProp,
+  hoursProp,
   throughtputDataDlProp,
 }) {
   const [throughtputDataUl, setThroughtputDataUl] = useState(
@@ -13,7 +13,7 @@ function ThroughtputLineChart({
   const [throughtputDataDl, setThroughtputDataDl] = useState(
     throughtputDataDlProp
   );
-  const [hoursData, setHoursData] = useState(hoursDataProp);
+  const [hoursData, setHoursData] = useState(hoursProp);
 
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>

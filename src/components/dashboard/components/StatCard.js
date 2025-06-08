@@ -29,7 +29,6 @@ AreaGradient.propTypes = {
 
 function StatCard({ title, value, interval, trend, data, hours }) {
   const theme = useTheme();
-
   const trendColors = {
     up:
       theme.palette.mode === 'light'

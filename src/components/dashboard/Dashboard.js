@@ -15,20 +15,28 @@ import {
   Paper,
   Typography,
   Button,
+  Skeleton,
+  Grid2,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
+import SheetCityDateSelectionDialog from "./components/custom/SheetCityDateSelectionDialog";
 import TabPanel from "@mui/lab/TabPanel";
-import SheetNameAndCitySelectionDialog from "./components/custom/SheetNameAndCitySelectionDialog";
+import useCity from "../../hooks/useCity";
+import useSheet from "../../hooks/useSheet";
+import { LineChart } from "recharts";
+import { BarChart } from "@mui/x-charts";
+import useDate from "../../hooks/useDate";
 
 export default function Dashboard({ onLogout, ...props }) {
   const [value, setValue] = React.useState("1");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [sheetsNames, setSheetNames] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [dates, setDates] = useState([]);
   const [rpcConnectionRateArray, setRpcConnectionRateArray] = useState([]);
   const [userThroughputDL, setUserThroughputDL] = useState([]);
   const [userThroughputUL, setUserThroughputUL] = useState([]);
@@ -87,6 +95,16 @@ export default function Dashboard({ onLogout, ...props }) {
   const [userSelectedCity, setUserSelectedCity] = useState();
   const [citiesState, setCitiesState] = useState([]);
   const [showUploadInput, setShowUploadInput] = useState(false);
+  const { selectedCity } = useCity();
+  const { selectedSheet } = useSheet();
+  const { selectedDate } = useDate();
+  useEffect(() => {
+    const reloadDashboard = async () => {
+      await handleSheetNameSelected(selectedSheet, selectedCity, selectedDate, file);
+    };
+    if (file) reloadDashboard();
+  }, [selectedCity, selectedSheet, selectedDate]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -98,6 +116,7 @@ export default function Dashboard({ onLogout, ...props }) {
     if (data && data["sheets"] && data["cities"]) {
       setSheetNames(data["sheets"]);
       setCitiesState(data["cities"]);
+      setDates(data["dates"]);
       setFileUploaded(true);
     } else {
       console.log("Invalid data received:", data);
@@ -106,17 +125,31 @@ export default function Dashboard({ onLogout, ...props }) {
 
   //2 handle sheetname selection
 
-  const handleSheetNameSelected = async (sheetName) => {
+  const handleSheetNameSelected = async (
+    selectedSheet,
+    selectedCity,
+    selectedDate
+  ) => {
     setLoading(true);
     try {
-      const kpiData = await getKPI("Hourly Ville", file);
+      const kpiData = await getKPI(
+        selectedSheet,
+        selectedCity,
+        selectedDate,
+        file
+      );
 
       if (!kpiData || !kpiData["data"]) {
         console.error("Invalid KPI data received:", kpiData);
         return;
       }
 
-      let hourData = Object.values(kpiData["data"]).map((kpi) => kpi["Hour"]);
+      let hourData = Object.values(kpiData["data"]).map((kpi) => {
+        return kpi["Hour"];
+      });
+      let datesData = Object.values(kpiData["data"]).map((kpi) => {
+        return kpi["Date"];
+      });
       let rrcConnectionRate = Object.values(kpiData["data"]).map(
         (kpi) => kpi["1_RRC Connection Success Rate"]
       );
@@ -435,6 +468,7 @@ export default function Dashboard({ onLogout, ...props }) {
       </>
     );
   };
+
   return (
     <Box sx={{ display: "flex" }}>
       <SideMenu onLogout={onLogout} />
@@ -461,16 +495,17 @@ export default function Dashboard({ onLogout, ...props }) {
           <Header />
 
           {fileUploaded && showSheetDialog && (
-            <SheetNameAndCitySelectionDialog
+            <SheetCityDateSelectionDialog
               dialogDataProp={sheetsNames}
               selectedSheetNameProp={setSelectedSheetName}
               handleSelectSheetnameChange={handleSheetNameSelected}
               onDialogClose={() => setShowSheetDialog(false)}
               citiesProp={citiesState}
+              datesProp={dates}
             />
           )}
 
-          {file && selectedSheetName && !showSheetDialog && !loading && (
+          {file && selectedSheetName && !showSheetDialog && (
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList
@@ -483,54 +518,57 @@ export default function Dashboard({ onLogout, ...props }) {
                 </TabList>
               </Box>
               <TabPanel value="1">
-                <MainGrid
-                  rrcConnectionRateProp={rpcConnectionRateArray}
-                  userDownloadRate={userThroughputDL}
-                  userUploadRate={userThroughputUL}
-                  erabSuccessRateProp={erabSuccessRate}
-                  uploadtTrafficProp={trafficVolumeUL}
-                  downloadTrafficProp={trafficVolumeDL}
-                  hourProp={hours}
-                  cellAvailabilityProp={cellAvailability}
-                  sessionContinuityProp={_9_LTE_Session_Continuity}
-                  hoursDataProp={hours}
-                  CityProp={city}
-                  _9_LTE_Session_ContinuityProp={_9_LTE_Session_Continuity}
-                  _16QAM_Prop={_16QAM_}
-                  _64QAM_Prop={_64QAM_}
-                  _256QAM_Prop={_256QAM_}
-                  Active_usersProp={Active_users}
-                  CellThroughputDLMbps_Prop={CellThroughputDLMbps__}
-                  Cell_Throughput_UL_Mbps_Prop={CellThroughputDLMbps__}
-                  IntraFrequencyHOSRProp={IntraFrequencyHOSR}
-                  SpectralEfficiencybpshz__Prop={SpectralEfficiencybpshz___}
-                  S1_Signaling_SetupProp={S1_Signaling_Setup}
-                  _3_E_RAB_Drop_Rate_Prop={_3_E_RAB_Drop_Rate_}
-                  RRC_Connect_UserProp={RRC_Connect_User}
-                  _6_User_throughput_DLProp={_6_User_throughput_DL}
-                  _7_User_throughtput__ULProp={_7_User_throughtput_UL}
-                  Inter_Frequency_HOSRProp={Inter_Frequency_HOSR}
-                  pmCellDowntimeAutoProp={pmCellDowntimeAuto}
-                  pmCellDowntimeManProp={pmCellDowntimeMan}
-                  Traffic_Volume_UL__Gbytes_Prop={Traffic_Volume_UL__Gbytes}
-                  Traffic_Volume_DL__Gbytes_Prop={Traffic_Volume_DL__Gbytes}
-                  pmActiveUeDlSumProp={pmActiveUeDlSum}
-                  User_throughput_UL_CAProp={User_throughput_UL_CA_}
-                  _CSFB_to_UMTSProp={_CSFBtoUMTS}
-                  _CSFB_to_GSMProp={_CSFB_to_GSM}
-                  User_throughput_DL_CAProp={User_throughput_DL_CA_}
-                  RSSI_dbm_Prop={RSSI_dbm__}
-                  RSSI_PUCCH_dBm_Prop={RSSI_PUCCH_dBm_}
-                  CSFB_SR__Prop={CSFB_SR__}
-                  PRB_DL_NewProp={PRB_DL_New}
-                  PRB_UL_NewProp={PRB_UL_New}
-                  CQIProp={CQI}
-                  SINR_Pusch_dB_Prop={SINR_Pusch_dB}
-                  QPSK_Prop={QPSK___}
-                  Average_DL_UE_LatencyProp={Average_DL_UE_Latency}
-                  UL_RLC_Bler_Rate_Prop={UL_RLC_Bler_Rate__}
-                  DL_RLC_Bler_Rate_Prop={DL_RLC_Bler_Rate_}
-                />
+                {!loading && (
+                  <MainGrid
+                    rrcConnectionRateProp={rpcConnectionRateArray}
+                    userDownloadRate={userThroughputDL}
+                    userUploadRate={userThroughputUL}
+                    erabSuccessRateProp={erabSuccessRate}
+                    uploadtTrafficProp={trafficVolumeUL}
+                    downloadTrafficProp={trafficVolumeDL}
+                    hourProp={hours}
+                    cellAvailabilityProp={cellAvailability}
+                    sessionContinuityProp={_9_LTE_Session_Continuity}
+                    CityProp={city}
+                    _9_LTE_Session_ContinuityProp={_9_LTE_Session_Continuity}
+                    _16QAM_Prop={_16QAM_}
+                    _64QAM_Prop={_64QAM_}
+                    _256QAM_Prop={_256QAM_}
+                    Active_usersProp={Active_users}
+                    CellThroughputDLMbps_Prop={CellThroughputDLMbps__}
+                    Cell_Throughput_UL_Mbps_Prop={CellThroughputDLMbps__}
+                    IntraFrequencyHOSRProp={IntraFrequencyHOSR}
+                    SpectralEfficiencybpshz__Prop={SpectralEfficiencybpshz___}
+                    S1_Signaling_SetupProp={S1_Signaling_Setup}
+                    _3_E_RAB_Drop_Rate_Prop={_3_E_RAB_Drop_Rate_}
+                    RRC_Connect_UserProp={RRC_Connect_User}
+                    _6_User_throughput_DLProp={_6_User_throughput_DL}
+                    _7_User_throughtput__ULProp={_7_User_throughtput_UL}
+                    Inter_Frequency_HOSRProp={Inter_Frequency_HOSR}
+                    pmCellDowntimeAutoProp={pmCellDowntimeAuto}
+                    pmCellDowntimeManProp={pmCellDowntimeMan}
+                    Traffic_Volume_UL__Gbytes_Prop={Traffic_Volume_UL__Gbytes}
+                    Traffic_Volume_DL__Gbytes_Prop={Traffic_Volume_DL__Gbytes}
+                    pmActiveUeDlSumProp={pmActiveUeDlSum}
+                    User_throughput_UL_CAProp={User_throughput_UL_CA_}
+                    _CSFB_to_UMTSProp={_CSFBtoUMTS}
+                    _CSFB_to_GSMProp={_CSFB_to_GSM}
+                    User_throughput_DL_CAProp={User_throughput_DL_CA_}
+                    RSSI_dbm_Prop={RSSI_dbm__}
+                    RSSI_PUCCH_dBm_Prop={RSSI_PUCCH_dBm_}
+                    CSFB_SR__Prop={CSFB_SR__}
+                    PRB_DL_NewProp={PRB_DL_New}
+                    PRB_UL_NewProp={PRB_UL_New}
+                    CQIProp={CQI}
+                    SINR_Pusch_dB_Prop={SINR_Pusch_dB}
+                    QPSK_Prop={QPSK___}
+                    Average_DL_UE_LatencyProp={Average_DL_UE_Latency}
+                    UL_RLC_Bler_Rate_Prop={UL_RLC_Bler_Rate__}
+                    DL_RLC_Bler_Rate_Prop={DL_RLC_Bler_Rate_}
+                  />
+                )}
+
+                {loading && <CircularProgress />}
               </TabPanel>
               <TabPanel value="2">
                 <Typography>No Data found</Typography>

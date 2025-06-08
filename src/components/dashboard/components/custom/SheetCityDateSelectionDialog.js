@@ -12,23 +12,36 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import useSheet from "../../../../hooks/useSheet";
+import useDate from "../../../../hooks/useDate";
 import useCity from "../../../../hooks/useCity";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-export default function SheetNameAndCitySelectionDialog({
+export default function SheetCityDateSelectionDialog({
   dialogDataProp,
   selectedSheetNameProp,
   handleSelectSheetnameChange,
   onDialogClose,
   citiesProp,
+  datesProp,
 }) {
   const [open, setOpen] = React.useState(true);
   const [selectedSheetName, setSelectedSheetName] = React.useState(
-    dialogDataProp[1]
+    dialogDataProp[0]
   );
-  const [selectedCityName, setSelectedCityName] = React.useState('');
-  const radioGroupRef = React.useRef(null);
-  const { selectedCity, setSelectedCity, cities, setCities } = useCity();
+  const [selectedCityName, setSelectedCityName] = React.useState("");
+  //Weird name to distinguish between this and the context value name
+  const [selectedDateControlledValue, setSelectedDateControlledValue] =
+    React.useState();
 
+  const radioGroupRef = React.useRef(null);
+
+  const { setSelectedCity, setCities } = useCity();
+  const { setSheets, setSelectedSheet } = useSheet();
+  const { setDates, setSelectedDate } = useDate();
   const handleSheetChange = (event) => {
     setSelectedSheetName(event.target.value);
   };
@@ -45,17 +58,34 @@ export default function SheetNameAndCitySelectionDialog({
   };
 
   const handleOk = () => {
-    handleSelectSheetnameChange(selectedSheetName);
-    setOpen(false);
     if (selectedSheetName) {
       setSelectedSheetName(selectedSheetName);
       selectedSheetNameProp(selectedSheetName);
-
-      if (selectedCityName && citiesProp) {
-        // setSelectedCity(selectedCityName)
-        // setCities(citiesProp);
-      }
     }
+    if (
+      selectedCityName &&
+      datesProp &&
+      selectedDateControlledValue &&
+      citiesProp &&
+      selectedSheetName
+    ) {
+      setCities(citiesProp);
+      setSelectedCity(selectedCityName);
+      setSheets(dialogDataProp);
+      setSelectedSheet(selectedSheetName);
+      setDates(datesProp);
+      setSelectedDate(dayjs(selectedDateControlledValue).format("YYYY-MM-DD"));
+    }
+
+    handleSelectSheetnameChange(
+      selectedSheetName,
+      selectedCityName,
+      dayjs(selectedDateControlledValue).format("YYYY-MM-DD")
+    );
+
+    //TODO: Add some checks before the user closes the dialog (City and Date selection)
+
+    setOpen(false);
     onDialogClose();
   };
 
@@ -65,7 +95,7 @@ export default function SheetNameAndCitySelectionDialog({
 
   return (
     <Dialog
-      sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 550 } }}
+      sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 650 } }}
       maxWidth="xs"
       TransitionProps={{ onEntering: handleEntering }}
       open={open}
@@ -122,6 +152,25 @@ export default function SheetNameAndCitySelectionDialog({
             </Select>
           </FormControl>
         </Box>
+
+        <Divider sx={{ my: 2 }} />
+        <Box>
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            Select Date:
+          </Typography>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              onChange={(value) => setSelectedDateControlledValue(value)}
+              value={selectedDateControlledValue}
+              minDate={dayjs(datesProp[0], "YYYY-MM-DD")}
+              maxDate={dayjs(datesProp[datesProp.length - 1], "YYYY-MM-DD")}
+              sx={{
+                width: "100%",
+              }}
+              label="Date"
+            />
+          </LocalizationProvider>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel}>
@@ -132,11 +181,3 @@ export default function SheetNameAndCitySelectionDialog({
     </Dialog>
   );
 }
-
-SheetNameAndCitySelectionDialog.propTypes = {
-  dialogDataProp: PropTypes.array.isRequired,
-  selectedSheetName: PropTypes.func.isRequired,
-  handleSelectSheetnameChange: PropTypes.func.isRequired,
-  onDialogClose: PropTypes.func.isRequired,
-  citiesProp: PropTypes.array.isRequired,
-};

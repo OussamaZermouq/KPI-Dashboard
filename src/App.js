@@ -21,22 +21,19 @@ import {
   THEME_ID as MATERIAL_THEME_ID,
 } from "@mui/material/styles";
 import CustomChatCreationPage from "./components/customchart/CustomChatCreationPage";
-
-export const CityContext = createContext(null);
+import CityContextProvider from "./contexts/CityContext";
+import SheetContextProvider from "./contexts/SheetContext";
+import DateContextProvider from "./contexts/DateContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [mode, setMode] = useState("light");
-  const [selectedCity, setSelectedCity] = useState('');
-  const [cities, setCities] = useState([]);
+
   useEffect(() => {
     const token = localStorage.getItem("jwt-token");
     if (token) {
       setIsAuthenticated(true);
     }
   }, []);
-
- 
 
   const ProtectedRoute = ({ children }) => {
     const isAuthenticated = !!localStorage.getItem("jwt-token");
@@ -50,52 +47,53 @@ function App() {
   });
 
   return (
-    <ThemeProvider theme={{ [MATERIAL_THEME_ID]: theme }}>
-      <JoyCssVarsProvider>
-        <CssBaseline enableColorScheme />
-        <CityContext.Provider
-          value={{
-            selectedCity,
-            setSelectedCity,
-            cities, 
-            setCities
-          }}
-        >
-          <Router>
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/login" element={<LoginComponent />} />
-              <Route path="/signup" element={<SingupComponent />} />
-              <Route path="/test" element={<Test />} />
-              <Route
-                path="/users"
-                element={
-                  <ProtectedRoute>
-                    <UsersPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-               <Route
-                path="/custom"
-                element={
-                  <ProtectedRoute>
-                    <CustomChatCreationPage />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </Router>
-        </CityContext.Provider>
-      </JoyCssVarsProvider>
-    </ThemeProvider>
+    <DateContextProvider>
+      <CityContextProvider>
+        <SheetContextProvider>
+          <ThemeProvider theme={{ [MATERIAL_THEME_ID]: theme }}>
+            <JoyCssVarsProvider>
+              <CssBaseline enableColorScheme />
+
+              <Router>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<Navigate to="/dashboard" replace />}
+                  />
+                  <Route path="/login" element={<LoginComponent />} />
+                  <Route path="/signup" element={<SingupComponent />} />
+                  <Route path="/test" element={<Test />} />
+                  <Route
+                    path="/users"
+                    element={
+                      <ProtectedRoute>
+                        <UsersPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/custom"
+                    element={
+                      <ProtectedRoute>
+                        <CustomChatCreationPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </Router>
+            </JoyCssVarsProvider>
+          </ThemeProvider>
+        </SheetContextProvider>
+      </CityContextProvider>
+    </DateContextProvider>
   );
 }
 

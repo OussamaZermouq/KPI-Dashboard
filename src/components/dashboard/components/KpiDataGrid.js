@@ -25,7 +25,7 @@ function KpiDataGrid({
     _64QAM_Prop,
     _256QAM_Prop,
     Spectral_Efficiency__bps_hz___Prop,
-    hoursDataProp,
+    hoursProp,
     cityProp,
     Traffic_Volume_UL__Gbytes_Prop,
     Traffic_Volume_DL__Gbytes_Prop,
@@ -63,14 +63,14 @@ function KpiDataGrid({
   // Dropdown pour filtrer par heure
   const [selectedHour, setSelectedHour] = useState(() => {
     // Par défaut, sélectionner la première heure si disponible
-    if (Array.isArray(hoursDataProp) && hoursDataProp.length > 0) {
-      return hoursDataProp[0];
+    if (Array.isArray(hoursProp) && hoursProp.length > 0) {
+      return hoursProp[0];
     }
     return "";
   });
   // Extraction des heures uniques (en ignorant les doublons)
-  const uniqueHours = Array.isArray(hoursDataProp)
-    ? [...new Set((hoursDataProp.filter((h) => h !== undefined && h !== null && h !== "")))]
+  const uniqueHours = Array.isArray(hoursProp)
+    ? [...new Set((hoursProp.filter((h) => h !== undefined && h !== null && h !== "")))]
     : [];
 
   // Gérer le changement d'heure sélectionnée
@@ -88,8 +88,8 @@ function KpiDataGrid({
   // Helper to get filtered value for a KPI array
   const getFilteredValue = (arr) => {
     // Toujours afficher la valeur correspondant à l'heure sélectionnée
-    if (selectedHour && Array.isArray(hoursDataProp)) {
-      const idx = hoursDataProp.findIndex(h => h === selectedHour);
+    if (selectedHour && Array.isArray(hoursProp)) {
+      const idx = hoursProp.findIndex(h => h === selectedHour);
       if (idx !== -1 && Array.isArray(arr)) {
         return arr[idx] !== undefined ? arr[idx] : '';
       }
@@ -104,8 +104,8 @@ function KpiDataGrid({
 
   // Helper to get filtered value for city (affiche la ville correspondant à l'heure sélectionnée)
   const getFilteredCity = () => {
-    if (selectedHour && Array.isArray(hoursDataProp) && Array.isArray(cityProp)) {
-      const idx = hoursDataProp.findIndex(h => h === selectedHour);
+    if (selectedHour && Array.isArray(hoursProp) && Array.isArray(cityProp)) {
+      const idx = hoursProp.findIndex(h => h === selectedHour);
       if (idx !== -1) {
         return cityProp[idx] !== undefined ? cityProp[idx] : '';
       }
@@ -191,7 +191,7 @@ function KpiDataGrid({
     ...row,
     Valeur: getFilteredValue(kpiMap[row.kpi]),
     city: getFilteredCity(cityProp),
-    hours: getFilteredValue(hoursDataProp), // Add hours value to each row
+    hours: getFilteredValue(hoursProp), // Add hours value to each row
   }));
  
 return (

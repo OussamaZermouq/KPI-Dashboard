@@ -1,5 +1,6 @@
 import axios from "axios";
-export async function getKPI(sheetName, file) {
+
+export async function getKPI(sheetName, city, date, file) {
   const token = localStorage.getItem("jwt-token");
   if (!token) {
     console.error("No token found");
@@ -11,9 +12,9 @@ export async function getKPI(sheetName, file) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `http://127.0.0.1:8000/upload?sheet_name=${encodeURIComponent(sheetName)}`,
+    url: `http://127.0.0.1:8000/upload?city=${encodeURI(city)}&sheet_name=${encodeURI(sheetName)}&date=${date}`,
     headers: {
-      "Authorization": `${token}`,
+      Authorization: `${token}`,
       "Content-Type": "multipart/form-data",
     },
     data: data,
@@ -28,12 +29,11 @@ export async function getKPI(sheetName, file) {
   }
 }
 
-export async function getFileInfo(file){
-  const token = localStorage.getItem('jwt-token');
-  if (!token){
-
+export async function getFileInfo(file) {
+  const token = localStorage.getItem("jwt-token");
+  if (!token) {
   }
-  
+
   let data = new FormData();
   data.append("file", file);
 
@@ -42,7 +42,7 @@ export async function getFileInfo(file){
     maxBodyLength: Infinity,
     url: `http://127.0.0.1:8000/info`,
     headers: {
-      "Authorization": `${token}`,
+      Authorization: `${token}`,
       "Content-Type": "multipart/form-data",
     },
     data: data,

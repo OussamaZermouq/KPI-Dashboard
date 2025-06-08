@@ -10,7 +10,13 @@ import { Card, CardActionArea, CardContent, Paper, Stack } from "@mui/material";
 import { getFileInfo } from "../../../../service/kpiService";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ChartDataPicker from "./ChartDataPicker";
-const steps = ["Upload Files", "Choose Chart Type", "Choose Data"];
+import ChartCustomization from "./ChartCutomization";
+const steps = [
+  "Upload Files",
+  "Choose Chart Type",
+  "Choose Data",
+  "Chart Customization",
+];
 
 export default function CreateCustomChartStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -18,11 +24,18 @@ export default function CreateCustomChartStepper() {
   const [file, setFile] = React.useState();
   const [fileData, setFileData] = React.useState([]);
   const [selectedChart, setSelectedChart] = React.useState();
-
+  const [selectedCity, setselectedCity] = React.useState();
+  const [selectedSheet, setSelectedSheet] = React.useState();
   const handleChartSelection = (chart) => {
     setSelectedChart(chart);
   };
+  const handleSheetSelection = (sheet) => {
+    setSelectedSheet(sheet);
+  };
 
+  const handleCityChange = (city) => {
+    setselectedCity(city);
+  };
   //Step functions
 
   const isStepOptional = (step) => {
@@ -266,6 +279,7 @@ export default function CreateCustomChartStepper() {
             sx={{
               height: "700px",
               display: "flex",
+              m: 2,
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
@@ -280,7 +294,21 @@ export default function CreateCustomChartStepper() {
                 }
               />
             )}
-            {activeStep === 2 && (selectedChart && <ChartDataPicker dataProp={fileData} />)}
+            {activeStep === 2 && selectedChart && (
+              <ChartDataPicker
+                dataProp={fileData}
+                setSelectedCityProp={handleCityChange}
+                setSelectedSheetProp={handleSheetSelection}
+              />
+            )}
+            {activeStep === 3 && (
+              <ChartCustomization
+                sheetNameProp={selectedSheet}
+                cityProp={selectedCity}
+                chartTypeProp={selectedChart}
+                fileProp={file}
+              />
+            )}
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
@@ -298,9 +326,8 @@ export default function CreateCustomChartStepper() {
                 Skip
               </Button>
             )}
-            
-            <Button disabled={!file} onClick={handleNext}>
 
+            <Button disabled={!file} onClick={handleNext}>
               {activeStep === steps.length - 1 ? "Finish" : "Next"}
             </Button>
           </Box>

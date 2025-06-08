@@ -1,16 +1,15 @@
 import * as React from "react";
 import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { MenuItem } from "@mui/material";
 import useCity from "../../../../hooks/useCity";
 
 export default function CitySelect() {
-  // const { cities, setCities, selectedCity, setSelectedCity } =
-  //   useCity()
+  const { cities, setCities, selectedCity, setSelectedCity } = useCity()
 
   const handleChange = (event) => {
-    //setSelectedCity(event.target.value);
+    setSelectedCity(event.target.value);
   };
 
   return (
@@ -19,17 +18,16 @@ export default function CitySelect() {
       <Select
         labelId="city-select-label"
         id="city-select"
-        // value={selectedCity}
+        value={selectedCity}
         onChange={handleChange}
         autoWidth
         label="City"
       >
-        {/* {cities & cities.length >0 && (
+        {cities && (
           cities.map((city)=>{
-            <MenuItem value={city}>{city}</MenuItem>
+            return <MenuItem value={city}>{city}</MenuItem>
           })
-        )} */}
-        <MenuItem value={"test"}>test</MenuItem>
+        )}
       </Select>
     </FormControl>
   );
