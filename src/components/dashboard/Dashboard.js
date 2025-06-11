@@ -109,6 +109,9 @@ export default function Dashboard({ onLogout, ...props }) {
     setValue(newValue);
   };
 
+  const handleUploadFileToCloud = () =>{
+    
+  }
   //1 handle upload
   const handleUploadFile = async (file) => {
     setFile(file);

@@ -24,10 +24,12 @@ import CustomChatCreationPage from "./components/customchart/CustomChatCreationP
 import CityContextProvider from "./contexts/CityContext";
 import SheetContextProvider from "./contexts/SheetContext";
 import DateContextProvider from "./contexts/DateContext";
-
+import { LicenseInfo } from "@mui/x-license";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
+  //Activate MUI Pro license
+  LicenseInfo.setLicenseKey(process.env.MUI_LICENSE_KEY);
   useEffect(() => {
     const token = localStorage.getItem("jwt-token");
     if (token) {
@@ -45,6 +47,7 @@ function App() {
       dark: true,
     },
   });
+
 
   return (
     <DateContextProvider>

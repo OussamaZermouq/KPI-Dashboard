@@ -12,7 +12,7 @@ export default function SheetSelect() {
     setSelectedSheet(e.target.value);
   };
   return (
-    <FormControl sx={{ height: 10, minWidth: 120 }} size="small">
+    <FormControl sx={{ height: "100%", minWidth: 120 }} size="large">
       <InputLabel id="sheet-select-label">Sheet</InputLabel>
       <Select
         labelId="sheet-select-label"

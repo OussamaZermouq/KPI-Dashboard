@@ -19,7 +19,7 @@ export default function CustomDatePicker() {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         sx={{
-          height: "10",
+          height: "100%",
         }}
         onChange={(value) => handleDateUpdate(value)}
         value={selectedDateControlledValue}

@@ -7,7 +7,13 @@ import Typography from "@mui/material/Typography";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { DialogActions, DialogContent, Box, Divider } from "@mui/material";
+import {
+  DialogActions,
+  DialogContent,
+  Box,
+  Divider,
+  Checkbox,
+} from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -37,6 +43,7 @@ export default function SheetCityDateSelectionDialog({
   const [selectedDateControlledValue, setSelectedDateControlledValue] =
     React.useState();
 
+  const [uploadToCloud, setuploadToCloud] = React.useState(false)
   const radioGroupRef = React.useRef(null);
 
   const { setSelectedCity, setCities } = useCity();
@@ -95,7 +102,7 @@ export default function SheetCityDateSelectionDialog({
 
   return (
     <Dialog
-      sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 650 } }}
+      sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 800 } }}
       maxWidth="xs"
       TransitionProps={{ onEntering: handleEntering }}
       open={open}
@@ -171,6 +178,14 @@ export default function SheetCityDateSelectionDialog({
             />
           </LocalizationProvider>
         </Box>
+        <Divider textAlign="center" sx={{mt:3}} orientation="horizontal" >
+          Optional
+        </Divider>
+
+        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+          Cloud :
+        </Typography>
+        <FormControlLabel control={<Checkbox value={uploadToCloud} onChange={()=>setuploadToCloud(!uploadToCloud)}/>} label="Upload file to cloud" />
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel}>

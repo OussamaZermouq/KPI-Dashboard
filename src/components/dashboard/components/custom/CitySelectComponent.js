@@ -13,7 +13,7 @@ export default function CitySelect() {
   };
 
   return (
-    <FormControl sx={{ height: 10, minWidth: 120 }} size="small">
+    <FormControl sx={{ height:'100%', minWidth: 120 }} size="large">
       <InputLabel id="city-select-label">City</InputLabel>
       <Select
         labelId="city-select-label"
