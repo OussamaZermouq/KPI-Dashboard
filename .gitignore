@@ -24,3 +24,5 @@ yarn-error.log*
 
 
 src\components\dashboard\components\custom\test.js
+
+*.bak

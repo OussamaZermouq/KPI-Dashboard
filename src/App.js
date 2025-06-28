@@ -25,6 +25,7 @@ import CityContextProvider from "./contexts/CityContext";
 import SheetContextProvider from "./contexts/SheetContext";
 import DateContextProvider from "./contexts/DateContext";
 import { LicenseInfo } from "@mui/x-license";
+import ArchivePage from "./components/archive/ArchiveComponent";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
@@ -47,7 +48,6 @@ function App() {
       dark: true,
     },
   });
-
 
   return (
     <DateContextProvider>
@@ -87,6 +87,14 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <CustomChatCreationPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/archive"
+                    element={
+                      <ProtectedRoute>
+                        <ArchivePage />
                       </ProtectedRoute>
                     }
                   />

@@ -14,6 +14,9 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import { useNavigate, useLocation } from "react-router-dom";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import ArchiveIcon from '@mui/icons-material/Archive';
+
+
 export default function MenuContent({ userRole }) {
   const [isAdmin, setIsAdmin] = React.useState(userRole === "ADMIN");
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -27,6 +30,7 @@ export default function MenuContent({ userRole }) {
   };
   const mainListItems = [
     { text: "Dashboard", icon: <AnalyticsRoundedIcon />, slug: "/dashboard" },
+    {text:"Archive", icon: <ArchiveIcon />, slug:"/archive"},
     {text:"Custom chart", icon: <AutoAwesomeIcon />, slug:"/custom"},
     ...(userRole === "ADMIN"
       ? [
