@@ -3,7 +3,7 @@ import { getKPI } from "../../../../service/kpiService";
 import {
   Box,
   Divider,
-  Grid2,
+  Grid,
   Paper,
   Stack,
   TextField,
@@ -14,7 +14,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Carousel from "react-material-ui-carousel";
 
 export default function ChartCustomization({
   sheetNameProp,
@@ -97,19 +96,20 @@ export default function ChartCustomization({
 
         <Stack>
           <Typography variant="h5">Data</Typography>
-          {sheetData && (
+          {/* {sheetData && (
             <Carousel animation="slide">
               {Object.keys(sheetData[0]).map((key) => {
                 return <DataGridKeysItem item={key} />;
               })}
             </Carousel>
-          )}
+          )} */}
+          {/* TODO: Find a better carousel component or look for a better idea */}
         </Stack>
       </Stack>
 
-      <Grid2 container columns={3} gap={50}>
-        <Grid2></Grid2>
-      </Grid2>
+      <Grid container columns={3} gap={50}>
+        <Grid></Grid>
+      </Grid>
     </Paper>
   );
 }

@@ -15,7 +15,6 @@ import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import AppTheme from "../../../shared-theme/AppTheme";
-import emailjs from "emailjs-com";
 import ColorModeSelect from "../../../shared-theme/ColorModeSelect";
 import { Snackbar } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";

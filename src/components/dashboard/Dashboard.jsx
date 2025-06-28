@@ -16,7 +16,7 @@ import {
   Typography,
   Button,
   Skeleton,
-  Grid2,
+  Grid,
   CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";

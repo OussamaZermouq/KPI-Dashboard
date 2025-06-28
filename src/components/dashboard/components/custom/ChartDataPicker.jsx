@@ -3,7 +3,7 @@ import {
   Box,
   Divider,
   FormControl,
-  Grid2,
+  Grid,
   Paper,
   Stack,
   Typography,
@@ -52,7 +52,7 @@ export default function ChartDataPicker({ dataProp, setSelectedCityProp, setSele
           </Typography>
         </Box>
 
-        <Grid2
+        <Grid
           sx={{
             justifyContent: "center",
           }}
@@ -60,7 +60,7 @@ export default function ChartDataPicker({ dataProp, setSelectedCityProp, setSele
           columns={2}
           spacing={20}
         >
-          <Grid2>
+          <Grid>
             <Stack gap={2}>
               <Typography variant="h7">
                 <LocationOnIcon /> Location
@@ -81,10 +81,10 @@ export default function ChartDataPicker({ dataProp, setSelectedCityProp, setSele
                 </Select>
               </FormControl>
             </Stack>
-          </Grid2>
+          </Grid>
 
           <Divider flexItem orientation="vertical" />
-          <Grid2>
+          <Grid>
             <Stack gap={2}>
               <Typography variant="h7">
                 <AnalyticsIcon /> Sheet
@@ -104,8 +104,8 @@ export default function ChartDataPicker({ dataProp, setSelectedCityProp, setSele
                 </Select>
               </FormControl>
             </Stack>
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
         <Box>
           <Typography variant="caption">Select the chart type</Typography>
         </Box>

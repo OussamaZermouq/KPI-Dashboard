@@ -1,10 +1,9 @@
 import axios from "axios";
 
-BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
-BASE_URL_PYTHON = "http://localhost:8000/file";
-TOKEN = localStorage.getItem("jwt-token");
-
 export async function getAllFiles() {
+  BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
+  BASE_URL_PYTHON = "http://localhost:8000/file";
+  TOKEN = localStorage.getItem("jwt-token");
   if (!TOKEN) {
     console.error("No token found");
   }
@@ -26,6 +25,9 @@ export async function getAllFiles() {
 }
 
 export async function getFileByHash(fileHash) {
+  BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
+  BASE_URL_PYTHON = "http://localhost:8000/file";
+  TOKEN = localStorage.getItem("jwt-token");
   if (!TOKEN) {
     console.error("No token found");
   }
@@ -47,6 +49,9 @@ export async function getFileByHash(fileHash) {
 }
 
 export async function uploadFileToCloud(file) {
+  BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
+  BASE_URL_PYTHON = "http://localhost:8000/file";
+  TOKEN = localStorage.getItem("jwt-token");
   if (!TOKEN) {
     console.error("No token found");
   }

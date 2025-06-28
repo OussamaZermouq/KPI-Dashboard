@@ -1,5 +1,5 @@
 import * as React from "react";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import ChartTypeCard from "./ChartTypeCard";
 
@@ -22,7 +22,7 @@ export default function ChooseChartType({handleChartSelectionCallback}) {
   };
   return (
     <Box sx={{ width: "80%" }}>
-      <Grid2
+      <Grid
         container
         spacing={2}
         columns={3}
@@ -33,17 +33,17 @@ export default function ChooseChartType({handleChartSelectionCallback}) {
       >
         {gridItems.map((item) => {
           return (
-            <Grid2 key={item.id}>
+            <Grid key={item.id}>
               <ChartTypeCard
                 isSelectedProp={selectedCard.id === item.id}
                 setSelectedCardProp={() => handleCardClick(item)}
                 name={item.name}
                 picture={item.picture}
               />
-            </Grid2>
+            </Grid>
           );
         })}
-      </Grid2>
+      </Grid>
     </Box>
   );
 }

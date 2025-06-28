@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { SheetContext } from "../contexts/SheetContext"
-import { DateContext } from "../contexts/DateContext";
+import { DateContext } from "../contexts/DateContext.jsx";
 
 const useDate = ()=>{
     const context = useContext(DateContext);

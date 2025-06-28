@@ -23,14 +23,14 @@ import {
 import CustomChatCreationPage from "./components/customchart/CustomChatCreationPage";
 import CityContextProvider from "./contexts/CityContext";
 import SheetContextProvider from "./contexts/SheetContext";
-import DateContextProvider from "./contexts/DateContext";
+import DateContextProvider from "./contexts/DateContext.jsx";
 import { LicenseInfo } from "@mui/x-license";
 import ArchivePage from "./components/archive/ArchiveComponent";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   //Activate MUI Pro license
-  LicenseInfo.setLicenseKey(process.env.MUI_LICENSE_KEY);
+  LicenseInfo.setLicenseKey(import.meta.env.MUI_LICENSE_KEY);
   useEffect(() => {
     const token = localStorage.getItem("jwt-token");
     if (token) {
