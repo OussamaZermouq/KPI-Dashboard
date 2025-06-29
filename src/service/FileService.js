@@ -1,17 +1,18 @@
 import axios from "axios";
 
+const BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
+const BASE_URL_PYTHON = "http://localhost:8000";
+const TOKEN = localStorage.getItem("jwt-token");
+
 export async function getAllFiles() {
-  BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
-  BASE_URL_PYTHON = "http://localhost:8000/file";
-  TOKEN = localStorage.getItem("jwt-token");
   if (!TOKEN) {
     console.error("No token found");
   }
   let config = {
     method: "get",
-    url: BASE_URL + "/",
+    url: BASE_URL_SPRING + "/",
     headers: {
-      Authorization: `Bearer ${TOKEN}`,
+      Authorization: `${TOKEN}`,
       "Content-Type": "application/json",
     },
   };
@@ -19,23 +20,20 @@ export async function getAllFiles() {
     const response = await axios.request(config);
     return response.data;
   } catch (error) {
-    console.error("Error fetching KPI data:", error);
+    console.error("Error files :", error);
     return null;
   }
 }
 
 export async function getFileByHash(fileHash) {
-  BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
-  BASE_URL_PYTHON = "http://localhost:8000/file";
-  TOKEN = localStorage.getItem("jwt-token");
   if (!TOKEN) {
     console.error("No token found");
   }
   let config = {
     method: "get",
-    url: BASE_URL + "/byhash?fileHash=" + fileHash,
+    url: BASE_URL_SPRING + "/byhash?fileHash=" + fileHash,
     headers: {
-      Autorization: `Bearer ${TOKEN}`,
+      Autorization: `${TOKEN}`,
       "Content-Type": "application/json",
     },
   };
@@ -43,39 +41,54 @@ export async function getFileByHash(fileHash) {
     const response = await axios.request(config);
     return response.data;
   } catch (error) {
-    console.error("Error fetching KPI data:", error);
+    console.error("Error file :", error);
     return null;
   }
 }
 
 export async function uploadFileToCloud(file) {
-  BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
-  BASE_URL_PYTHON = "http://localhost:8000/file";
-  TOKEN = localStorage.getItem("jwt-token");
   if (!TOKEN) {
     console.error("No token found");
+    throw new Error("No token found");
   }
 
-  let data = new FormData();
-  data.append("file", file);
+  const formData = new FormData();
+  formData.append("file", file);
 
+  try {
+    const response = await axios.post(
+      BASE_URL_PYTHON + "/uploadForCloud",
+      formData,
+      {
+        headers: {
+          Authorization: `${TOKEN}`,
+        },
+        maxBodyLength: Infinity,
+      }
+    );
+    //since it's comming from fastapi response and not spring 
+    //we have to manually deserialize it from String to JSON
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function deleteFileFromCloud(fileId) {
   let config = {
-    method: "post",
+    method: "delete",
     maxBodyLength: Infinity,
-    url: BASE_URL_PYTHON + "/uploadForCloud",
+    url: `${BASE_URL_SPRING}?fileId=${fileId}`,
     headers: {
-      Autorization: `Bearer ${TOKEN}`,
-      ...data.getHeaders(),
+      Authorization: `${TOKEN}`,
     },
-    data: data,
   };
-
-  axios
-    .request(config)
-    .then((response) => {
-      return JSON.stringify(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error("Error file :", error);
+    throw error;    
+  }
 }

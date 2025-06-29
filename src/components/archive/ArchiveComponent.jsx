@@ -62,7 +62,7 @@ export default function ArchivePage() {
               {snackBarProps.message}
             </Alert>
           </Snackbar>
-          <ArchiveFileTable />
+          <ArchiveFileTable setSnackBarProps={setSnackBarProps}/>
         </Stack>
       </Box>
     </Box>

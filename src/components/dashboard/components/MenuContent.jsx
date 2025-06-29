@@ -32,15 +32,14 @@ export default function MenuContent({ userRole }) {
     { text: "Dashboard", icon: <AnalyticsRoundedIcon />, slug: "/dashboard" },
     {text:"Archive", icon: <ArchiveIcon />, slug:"/archive"},
     {text:"Custom chart", icon: <AutoAwesomeIcon />, slug:"/custom"},
-    ...(userRole === "ADMIN"
-      ? [
+    ...(userRole === "ADMIN" ? [
           {
             text: "Utilisateurs",
             icon: <PeopleRoundedIcon />,
             slug: "/users",
           },
-        ]
-      : []),
+        ]: []
+    ),
   ];
 
   const secondaryListItems = [
