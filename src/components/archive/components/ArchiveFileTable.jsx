@@ -1,6 +1,6 @@
 import { DataGrid, unstable_resetCleanupTracking } from "@mui/x-data-grid";
-import React, { useState } from "react";
-import { getAllFiles, uploadFileToCloud } from "../../../service/FileService";
+import React, { useRef, useState } from "react";
+import { getAllFiles, updateFileCloud, uploadFileToCloud } from "../../../service/FileService";
 import {
   Box,
   Avatar,
@@ -14,7 +14,6 @@ import {
   styled,
   Tooltip,
 } from "@mui/material";
-import FileActionsDialog from "./FileActionsDialog";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -190,9 +189,50 @@ export default function ArchiveFileTable({ setSnackBarProps }) {
     );
   }
 
+  const inputRef = useRef();
+  const handleMenuItemClick = () => {
+    inputRef.current?.click();
+  };
+  const handleFileSelectionForUpdate = async (e, fileId) => {
+    setLoading(true);
+    await updateFileCloud(e.target.files[0], fileId)
+      .then((output) => {
+        console.log(output.code);
+
+        if (output.code === 200) {
+          setSnackBarProps({
+            open: true,
+            severity: "success",
+            message: "File has been successfully uploaded",
+          });
+        } else if (output.code === 400) {
+          setSnackBarProps({
+            open: true,
+            severity: "error",
+            message: "File doesn't exist in database",
+          });
+        } else {
+          setSnackBarProps({
+            open: true,
+            severity: "error",
+            message: "Internal server error has occurred",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setSnackBarProps({
+          open: true,
+          severity: "error",
+          message: "An error has occurred",
+        });
+      });
+    //this function sets the loading to false
+    getFilesData();
+  };
   const columns = [
     { field: "fileId", headerName: "File ID", flex: 0.4, minWidth: 50 },
-    { field: "fileName", headerName: "File name", flex: 1, minWidth: 150 },
+    { field: "fileName", headerName: "File name", flex: 1.5, minWidth: 150 },
     {
       field: "startDate",
       headerName: "Start date",
@@ -224,10 +264,11 @@ export default function ArchiveFileTable({ setSnackBarProps }) {
     {
       field: "uploadedBy",
       headerName: "Uploaded By",
-      flex: 1,
+      flex: 0.5,
       minWidth: 150,
       align: "center",
-      valueGetter: (value) => value ? `${value.firstName} ${value.lastName}`: "",
+      valueGetter: (value) =>
+        value ? `${value.firstName} ${value.lastName}` : "",
       renderCell: (params) => {
         const firstLastName =
           params.row.uploadedBy.firstName +
@@ -334,18 +375,17 @@ export default function ArchiveFileTable({ setSnackBarProps }) {
                   divider
                   sx={{ display: "flex", gap: "5px" }}
                   key={`${params.row.fileId}-menuitem-edit`}
-                  onClose={handleClose}
+                  onClick={handleMenuItemClick}
                 >
                   <EditIcon />
                   Change file
-                  <VisuallyHiddenInput
-                    type="file"
-                    onChange={(event) => {
-                      handleFileSelection(event);
-                    }}
-                  />
                 </MenuItem>
               )}
+              <VisuallyHiddenInput
+                type="file"
+                ref={inputRef}
+                onChange={(event)=>handleFileSelectionForUpdate(event, params.row.fileId)}
+              />
               {canUserEditDelete && (
                 <FileDeletionConfirmationDialog
                   fileId={params.row.fileId}

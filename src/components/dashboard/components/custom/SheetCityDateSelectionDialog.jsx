@@ -37,6 +37,7 @@ export default function SheetCityDateSelectionDialog({
   onDialogClose,
   citiesProp,
   datesProp,
+  setIsUploadFileToCloud
 }) {
   const [open, setOpen] = React.useState(true);
   const [selectedSheetName, setSelectedSheetName] = React.useState(
@@ -86,6 +87,7 @@ export default function SheetCityDateSelectionDialog({
       setSelectedSheet(selectedSheetName);
       setDates(datesProp);
       setSelectedDate(dayjs(selectedDateControlledValue).format("YYYY-MM-DD"));
+      setIsUploadFileToCloud(uploadToCloud)
     }
 
     handleSelectSheetnameChange(

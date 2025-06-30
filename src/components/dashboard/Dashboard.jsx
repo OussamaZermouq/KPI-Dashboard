@@ -18,6 +18,8 @@ import {
   Skeleton,
   Grid,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Tab from "@mui/material/Tab";
@@ -27,11 +29,10 @@ import SheetCityDateSelectionDialog from "./components/custom/SheetCityDateSelec
 import TabPanel from "@mui/lab/TabPanel";
 import useCity from "../../hooks/useCity";
 import useSheet from "../../hooks/useSheet";
-import { LineChart } from "recharts";
-import { BarChart } from "@mui/x-charts";
 import useDate from "../../hooks/useDate";
+import { uploadFileToCloud } from "../../service/FileService";
 
-export default function Dashboard({ onLogout, ...props }) {
+export default function Dashboard({ onLogout }) {
   const [value, setValue] = React.useState("1");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [sheetsNames, setSheetNames] = useState([]);
@@ -95,12 +96,24 @@ export default function Dashboard({ onLogout, ...props }) {
   const [userSelectedCity, setUserSelectedCity] = useState();
   const [citiesState, setCitiesState] = useState([]);
   const [showUploadInput, setShowUploadInput] = useState(false);
+  const [isUploadFileToCloud, setIsUploadFileToCloud] = useState(false);
+  const [snackBarProps, setSnackBarProps] = React.useState({
+    open: false,
+    severity: "",
+    message: "",
+  });
+
   const { selectedCity } = useCity();
   const { selectedSheet } = useSheet();
   const { selectedDate } = useDate();
   useEffect(() => {
     const reloadDashboard = async () => {
-      await handleSheetNameSelected(selectedSheet, selectedCity, selectedDate, file);
+      await handleSheetNameSelected(
+        selectedSheet,
+        selectedCity,
+        selectedDate,
+        file
+      );
     };
     if (file) reloadDashboard();
   }, [selectedCity, selectedSheet, selectedDate]);
@@ -109,9 +122,48 @@ export default function Dashboard({ onLogout, ...props }) {
     setValue(newValue);
   };
 
-  const handleUploadFileToCloud = () =>{
-    
-  }
+  const handleUploadFileToCloud = async () => {
+    setLoading(true);
+    await uploadFileToCloud(file)
+      .then((output) => {
+        console.log(output.code);
+
+        if (output.code === 200) {
+          setSnackBarProps({
+            open: true,
+            severity: "success",
+            message: "File has been successfully uploaded",
+          });
+        } else if (output.code === 400) {
+          setSnackBarProps({
+            open: true,
+            severity: "error",
+            message: "File is already in the database",
+          });
+        } else {
+          setSnackBarProps({
+            open: true,
+            severity: "error",
+            message: "Internal server error has occurred",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setSnackBarProps({
+          open: true,
+          severity: "error",
+          message: "An error has occurred",
+        });
+      });
+  };
+
+  const handleClose = () => {
+    setSnackBarProps({
+      ...snackBarProps,
+      open: false,
+    });
+  };
   //1 handle upload
   const handleUploadFile = async (file) => {
     setFile(file);
@@ -141,6 +193,9 @@ export default function Dashboard({ onLogout, ...props }) {
         selectedDate,
         file
       );
+      if (isUploadFileToCloud) {
+        handleUploadFileToCloud();
+      }
 
       if (!kpiData || !kpiData["data"]) {
         console.error("Invalid KPI data received:", kpiData);
@@ -392,18 +447,6 @@ export default function Dashboard({ onLogout, ...props }) {
     );
   };
 
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    width: 1,
-    //overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-  });
-
   const VisuallyHiddenInput2 = ({
     id,
     type = "file",
@@ -496,6 +539,21 @@ export default function Dashboard({ onLogout, ...props }) {
           }}
         >
           <Header />
+          <Snackbar
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            open={snackBarProps.open}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity={snackBarProps.severity}
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {snackBarProps.message}
+            </Alert>
+          </Snackbar>
 
           {fileUploaded && showSheetDialog && (
             <SheetCityDateSelectionDialog
@@ -505,6 +563,7 @@ export default function Dashboard({ onLogout, ...props }) {
               onDialogClose={() => setShowSheetDialog(false)}
               citiesProp={citiesState}
               datesProp={dates}
+              setIsUploadFileToCloud={setIsUploadFileToCloud}
             />
           )}
 

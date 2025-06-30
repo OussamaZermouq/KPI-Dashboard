@@ -2,9 +2,10 @@ import axios from "axios";
 
 const BASE_URL_SPRING = "http://localhost:8005/api/v1/file";
 const BASE_URL_PYTHON = "http://localhost:8000";
-const TOKEN = localStorage.getItem("jwt-token");
 
 export async function getAllFiles() {
+  const TOKEN = localStorage.getItem("jwt-token");
+
   if (!TOKEN) {
     console.error("No token found");
   }
@@ -26,6 +27,8 @@ export async function getAllFiles() {
 }
 
 export async function getFileByHash(fileHash) {
+  const TOKEN = localStorage.getItem("jwt-token");
+
   if (!TOKEN) {
     console.error("No token found");
   }
@@ -47,6 +50,8 @@ export async function getFileByHash(fileHash) {
 }
 
 export async function uploadFileToCloud(file) {
+  const TOKEN = localStorage.getItem("jwt-token");
+
   if (!TOKEN) {
     console.error("No token found");
     throw new Error("No token found");
@@ -66,8 +71,6 @@ export async function uploadFileToCloud(file) {
         maxBodyLength: Infinity,
       }
     );
-    //since it's comming from fastapi response and not spring 
-    //we have to manually deserialize it from String to JSON
     return response.data.data;
   } catch (error) {
     console.error(error);
@@ -76,6 +79,11 @@ export async function uploadFileToCloud(file) {
 }
 
 export async function deleteFileFromCloud(fileId) {
+  const TOKEN = localStorage.getItem("jwt-token");
+  if (!TOKEN) {
+    console.error("No token found");
+    throw new Error("No token found");
+  }
   let config = {
     method: "delete",
     maxBodyLength: Infinity,
@@ -89,6 +97,35 @@ export async function deleteFileFromCloud(fileId) {
     return response.data;
   } catch (error) {
     console.error("Error file :", error);
-    throw error;    
+    throw error;
+  }
+}
+
+export async function updateFileCloud(file, fileId) {
+  const TOKEN = localStorage.getItem("jwt-token");
+
+  if (!TOKEN) {
+    console.error("No token found");
+    throw new Error("No token found");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const response = await axios.put(
+      BASE_URL_PYTHON + "/updateForCloud?fileId=" + fileId,
+      formData,
+      {
+        headers: {
+          Authorization: `${TOKEN}`,
+        },
+        maxBodyLength: Infinity,
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 }
